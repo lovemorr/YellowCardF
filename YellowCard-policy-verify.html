@@ -88,7 +88,7 @@
      // Load the database and then populate the table
     async function initializeAndLoad() {
       console.log("Starting initializeAndLoad()");
-      const db = await loadDatabaseFromFile('yellow_card.db.sqbpro');  // Replace with the correct path if needed
+      const db = await loadDatabaseFromFile('yellow_card.db');  // Replace with the correct path if needed
 
       if (db) { //Only proceed if db loaded successfully.
           console.log("Database loaded successfully:", db);
