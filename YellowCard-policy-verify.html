@@ -162,69 +162,94 @@
       }
 
       policies.forEach(policy => {
-        const row = document.createElement('tr');
+        const row = document.createElement('tr'); // Create a new row for each policy
+
         // Helper function to create a cell
-        function createCell(text) {
+        function createCell(label, text) { //Added the Label
+          const cellLabel = document.createElement('td');
+          cellLabel.textContent = label; // add label
           const cell = document.createElement('td');
           cell.textContent = text ?? ''; // Handle potential nulls
-          return cell;
+          return [cellLabel, cell];
         }
-        row.appendChild(createCell("Verification Timestamp"));
-        row.appendChild(createCell(policy.verification_timestamp));
 
-        row.appendChild(createCell("PIC Name"));
-        row.appendChild(createCell(policy.pic_name));
+        let cells = createCell("Verification Timestamp", policy.verification_timestamp);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Yellow Card Number"));
-        row.appendChild(createCell(policy.yellow_card_number));
+        cells = createCell("PIC Name", policy.pic_name);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Policy Number"));
-        row.appendChild(createCell(policy.policy_number));
+        cells = createCell("Yellow Card Number", policy.yellow_card_number);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Issued On"));
-        row.appendChild(createCell(policy.issued_on));
+        cells = createCell("Policy Number", policy.policy_number);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Issued Timestamp"));
-        row.appendChild(createCell(policy.issued_timestamp));
+        cells = createCell("Issued On", policy.issued_on);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Valid From"));
-        row.appendChild(createCell(policy.valid_from));
+        cells = createCell("Issued Timestamp", policy.issued_timestamp);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Valid Upto"));
-        row.appendChild(createCell(policy.valid_upto));
+        cells = createCell("Valid From", policy.valid_from);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Customer Name"));
-        row.appendChild(createCell(policy.customer_name));
+        cells = createCell("Valid Upto", policy.valid_upto);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Vehicle Make"));
-        row.appendChild(createCell(policy.vehicle_make));
+        cells = createCell("Customer Name", policy.customer_name);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Vehicle Reg Number"));
-        row.appendChild(createCell(policy.vehicle_reg_number));
+        cells = createCell("Vehicle Make", policy.vehicle_make);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Countries Covered"));
-        row.appendChild(createCell(policy.countries_covered));
+        cells = createCell("Vehicle Reg Number", policy.vehicle_reg_number);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Vehicle Engine Number"));
-        row.appendChild(createCell(policy.vehicle_engine_number));
+        cells = createCell("Countries Covered", policy.countries_covered);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Vehicle Chassis Number"));
-        row.appendChild(createCell(policy.vehicle_chassis_number));
+        cells = createCell("Vehicle Engine Number", policy.vehicle_engine_number);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Vehicle Color"));
-        row.appendChild(createCell(policy.vehicle_color));
+        cells = createCell("Vehicle Chassis Number", policy.vehicle_chassis_number);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("No. of Seats"));
-        row.appendChild(createCell(policy.no_of_seats));
+        cells = createCell("Vehicle Color", policy.vehicle_color);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
 
-        row.appendChild(createCell("Issuing NB Contact"));
-        row.appendChild(createCell("Secretariat Contact"));
-        tableBody.appendChild(row)
+        cells = createCell("No. of Seats", policy.no_of_seats);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
+
+        cells = createCell("Issuing NB Contact", policy.issuing_nb_contact);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
+
+        cells = createCell("Secretariat Contact", policy.secretariat_contact);
+        row.appendChild(cells[0]);
+        row.appendChild(cells[1]);
+
+        tableBody.appendChild(row);
       });
     }
     // Call the initialization function
     initializeAndLoad();
-
   </script>
 </body>
 
