@@ -36,11 +36,8 @@
         <table class="table" id="policyTable">
           <thead>
             <tr>
-              <th colspan="2">
-                <span class="bg-success custom-small-header text-center">
-                  Yellow Card Information
-                </span>
-              </th>
+              <th>Field</th>
+              <th>Value</th>
             </tr>
           </thead>
           <tbody>
@@ -153,153 +150,115 @@
     }
 
     function populateTable(policies) {
-      const tableBody = document.querySelector('#policyTable tbody');
-      tableBody.innerHTML = ''; // Clear existing content
+            const tableBody = document.querySelector('#policyTable tbody');
+            tableBody.innerHTML = ''; // Clear existing content
+    
+            if (!policies || policies.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='2'>No policies to display.</td></tr>"; // Use colspan to fill both cells
+                return;
+            }
+    
+            policies.forEach(policy => {
+                //Re-declare constants, for ease of management.
+                const verificationTimestamp = "Verification Timestamp";
+                const picName = "PIC Name";
+                const yellowCardNumberr = "Yellow Card Number";
+                const policyNumber = "Policy Number";
+                const issuedOn = "Issued On";
+                const issuedTimestamp = "Issued Timestamp";
+                const validFrom = "Valid From";
+                const validUpto = "Valid Upto";
+                const customerName = "Customer Name";
+                const vehicleMake = "Vehicle Make";
+                const vehicleRegNumber = "Vehicle Reg Number";
+                const countriesCovered = "Countries Covered";
+                const vehicleEngineNumber = "Vehicle Engine Number";
+                const vehicleChassisNumber = "Vehicle Chassis Number";
+                const vehicleColor = "Vehicle Color";
+                const noOfSeats = "No. of Seats";
+                const issuingNBContact = "Issuing NB Contact";
+                const secretariatContact = "Secretariat Contact";
+    
+                let newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = verificationTimestamp;
+                newRow.insertCell().textContent = policy.verification_timestamp ?? '';
+    
+                newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = picName;
+                newRow.insertCell().textContent = policy.pic_name ?? '';
+    
+                newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = yellowCardNumberr;
+                newRow.insertCell().textContent = policy.yellow_card_number ?? '';
+    
+                newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = policyNumber;
+                newRow.insertCell().textContent = policy.policy_number ?? '';
+    
+                newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = issuedOn;
+                newRow.insertCell().textContent = policy.issued_on ?? '';
+    
+                newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = issuedTimestamp;
+                newRow.insertCell().textContent = policy.issued_timestamp ?? '';
+    
+                newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = validFrom;
+                newRow.insertCell().textContent = policy.valid_from ?? '';
+    
+                 newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = validUpto;
+                newRow.insertCell().textContent = policy.valid_upto ?? '';
+    
+                 newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = customerName;
+                newRow.insertCell().textContent = policy.customer_name ?? '';
+    
+                 newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = vehicleMake;
+                newRow.insertCell().textContent = policy.vehicle_make ?? '';
+    
+                 newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = vehicleRegNumber;
+                newRow.insertCell().textContent = policy.vehicle_reg_number ?? '';
+    
+                 newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = countriesCovered;
+                newRow.insertCell().textContent = policy.countries_covered ?? '';
+    
+                 newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = vehicleEngineNumber;
+                newRow.insertCell().textContent = policy.vehicle_engine_number ?? '';
+    
+                 newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = vehicleChassisNumber;
+                newRow.insertCell().textContent = policy.vehicle_chassis_number ?? '';
+    
+                 newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = vehicleColor;
+                newRow.insertCell().textContent = policy.vehicle_color ?? '';
+    
+                 newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = noOfSeats;
+                newRow.insertCell().textContent = policy.no_of_seats ?? '';
+    
+                 newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = issuingNBContact;
+                newRow.insertCell().textContent = policy.issuing_nb_contact ?? '';
+    
+                 newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = secretariatContact;
+                newRow.insertCell().textContent = policy.secretariat_contact ?? '';
+    
+    
+    
+            });
+        }
 
-      if (!policies || policies.length === 0) {
-        tableBody.innerHTML = "<tr><td>No policies to display.</td></tr>";
-        return;
-      }
 
-      policies.forEach(policy => {
-        const row = document.createElement('tr'); //Create New Row For Main Call
-
-        //Create all functions
-        const cellLabelVerf = document.createElement('td');
-        cellLabelVerf.textContent = "Verification Timestamp";
-        const cellVerf = document.createElement('td');
-        cellVerf.textContent = policy.verification_timestamp ?? '';
-
-        const cellLabelPic = document.createElement('td');
-        cellLabelPic.textContent = "Pic Name";
-        const cellPic = document.createElement('td');
-        cellPic.textContent = policy.pic_name ?? '';
-
-        const cellLabelNumber = document.createElement('td');
-        cellLabelNumber.textContent = "Number";
-        const cellNumber = document.createElement('td');
-        cellNumber.textContent = policy.yellow_card_number ?? '';
-
-        const cellLabelPolicy = document.createElement('td');
-        cellLabelPolicy.textContent = "Policy Number";
-        const cellPolicy = document.createElement('td');
-        cellPolicy.textContent = policy.policy_number ?? '';
-
-        const cellLabelIssued = document.createElement('td');
-        cellLabelIssued.textContent = "Issued";
-        const cellIssued = document.createElement('td');
-        cellIssued.textContent = policy.issued_on ?? '';
-
-        const cellLabelIssueTime = document.createElement('td');
-        cellLabelIssueTime.textContent = "Issue Time";
-        const cellIssueTime = document.createElement('td');
-        cellIssueTime.textContent = policy.issued_timestamp ?? '';
-
-        const cellLabelValidFrom = document.createElement('td');
-        cellLabelValidFrom.textContent = "Valid From";
-        const cellValidFrom = document.createElement('td');
-        cellValidFrom.textContent = policy.valid_from ?? '';
-
-        const cellLabelValidUpto = document.createElement('td');
-        cellLabelValidUpto.textContent = "Valid Upto";
-        const cellValidUpto = document.createElement('td');
-        cellValidUpto.textContent = policy.valid_upto ?? '';
-
-        const cellLabelCustomerName = document.createElement('td');
-        cellLabelCustomerName.textContent = "Customer Name";
-        const cellCustomerName = document.createElement('td');
-        cellCustomerName.textContent = policy.customer_name ?? '';
-
-        const cellLabelVehicleMake = document.createElement('td');
-        cellLabelVehicleMake.textContent = "Vehicle Make";
-        const cellVehicleMake = document.createElement('td');
-        cellVehicleMake.textContent = policy.vehicle_make ?? '';
-
-        const cellLabelVehicleReg = document.createElement('td');
-        cellLabelVehicleReg.textContent = "Vehicle Reg";
-        const cellVehicleReg = document.createElement('td');
-        cellVehicleReg.textContent = policy.vehicle_reg_number ?? '';
-
-        const cellLabelCountriesCovered = document.createElement('td');
-        cellLabelCountriesCovered.textContent = "Countries Covered";
-        const cellCountriesCovered = document.createElement('td');
-        cellCountriesCovered.textContent = policy.countries_covered ?? '';
-
-        const cellLabelVehicleEngine = document.createElement('td');
-        cellLabelVehicleEngine.textContent = "Vehicle Engine";
-        const cellVehicleEngine = document.createElement('td');
-        cellVehicleEngine.textContent = policy.vehicle_engine_number ?? '';
-
-        const cellLabelVehicleChassis = document.createElement('td');
-        cellLabelVehicleChassis.textContent = "Vehicle Chassis";
-        const cellVehicleChassis = document.createElement('td');
-        cellVehicleChassis.textContent = policy.vehicle_chassis_number ?? '';
-
-        const cellLabelVehicleColor = document.createElement('td');
-        cellLabelVehicleColor.textContent = "Vehicle Color";
-        const cellVehicleColor = document.createElement('td');
-        cellVehicleColor.textContent = policy.vehicle_color ?? '';
-
-        const cellLabelNumberSeats = document.createElement('td');
-        cellLabelNumberSeats.textContent = "Number Seats";
-        const cellNumberSeats = document.createElement('td');
-        cellNumberSeats.textContent = policy.no_of_seats ?? '';
-
-        const cellLabelIssuingNBContact = document.createElement('td');
-        cellLabelIssuingNBContact.textContent = "Issuing NB Contact";
-        const cellIssuingNBContact = document.createElement('td');
-        cellIssuingNBContact.textContent = policy.issuing_nb_contact ?? '';
-
-        const cellLabelSecretariatContact = document.createElement('td');
-        cellLabelSecretariatContact.textContent = "Secretariat Contact";
-        const cellSecretariatContact = document.createElement('td');
-        cellSecretariatContact.textContent = policy.secretariat_contact ?? '';
-
-        //Append to row now that all values are properly declared
-
-        row.appendChild(cellLabelVerf);
-        row.appendChild(cellVerf);
-        row.appendChild(cellLabelPic);
-        row.appendChild(cellPic);
-        row.appendChild(cellLabelNumber);
-        row.appendChild(cellNumber);
-        row.appendChild(cellLabelPolicy);
-        row.appendChild(cellPolicy);
-        row.appendChild(cellLabelIssued);
-        row.appendChild(cellIssued);
-        row.appendChild(cellLabelIssueTime);
-        row.appendChild(cellIssueTime);
-        row.appendChild(cellLabelValidFrom);
-        row.appendChild(cellValidFrom);
-        row.appendChild(cellLabelValidUpto);
-        row.appendChild(cellValidUpto);
-        row.appendChild(cellLabelCustomerName);
-        row.appendChild(cellCustomerName);
-        row.appendChild(cellLabelVehicleMake);
-        row.appendChild(cellVehicleMake);
-        row.appendChild(cellLabelVehicleReg);
-        row.appendChild(cellVehicleReg);
-        row.appendChild(cellLabelCountriesCovered);
-        row.appendChild(cellCountriesCovered);
-        row.appendChild(cellLabelVehicleEngine);
-        row.appendChild(cellVehicleEngine);
-        row.appendChild(cellLabelVehicleChassis);
-        row.appendChild(cellVehicleChassis);
-        row.appendChild(cellLabelVehicleColor);
-        row.appendChild(cellVehicleColor);
-        row.appendChild(cellLabelNumberSeats);
-        row.appendChild(cellNumberSeats);
-        row.appendChild(cellLabelIssuingNBContact);
-        row.appendChild(cellIssuingNBContact);
-        row.appendChild(cellLabelSecretariatContact);
-        row.appendChild(cellSecretariatContact);
-
-        tableBody.appendChild(row);
-      });
-}
         // Call the initialization function
     initializeAndLoad();
-
   </script>
 </body>
 
