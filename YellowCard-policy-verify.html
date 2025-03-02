@@ -68,25 +68,24 @@
     // Create your table (if it doesn't already exist)
     db.run(`
       CREATE TABLE IF NOT EXISTS yellow_card_policies (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        verification_timestamp DATETIME,
-        pic_name TEXT,
-        yellow_card_number TEXT UNIQUE,
-        policy_number TEXT,
-        issued_on DATE,
-        issued_timestamp DATETIME,
-        valid_from DATE,
-        valid_upto DATE,
-        customer_name TEXT,
-        vehicle_make TEXT,
-        vehicle_reg_number TEXT,
-        countries_covered TEXT,
-        vehicle_engine_number TEXT,
-        vehicle_chassis_number TEXT,
-        vehicle_color TEXT,
-        no_of_seats INTEGER,
-        issuing_nb_contact TEXT,
-        secretariat_contact TEXT
+          yellow_card_number TEXT PRIMARY KEY NOT NULL, -- Primary key is now yellow_card_number
+          verification_timestamp DATETIME,
+          pic_name TEXT,
+          policy_number TEXT,
+          issued_on DATE,
+          issued_timestamp DATETIME,
+          valid_from DATE,
+          valid_upto DATE,
+          customer_name TEXT,
+          vehicle_make TEXT,
+          vehicle_reg_number TEXT,
+          countries_covered TEXT,
+          vehicle_engine_number TEXT,
+          vehicle_chassis_number TEXT,
+          vehicle_color TEXT,
+          no_of_seats INTEGER,
+          issuing_nb_contact TEXT,
+          secretariat_contact TEXT
       );
     `);
 
