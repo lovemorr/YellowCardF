@@ -1,1 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+  <title>e-YC | Yellow Card Verification</title>
+
+  <!-- App CSS -->
+  <link href="css/app.bundle.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Navigation -->
+  <div style="border-bottom: #e2e2e2 1px solid;">
+    <nav class="navbar navbar-static-top" role="navigation"
+      style="margin-bottom: 0; padding-left: 50px; padding-right: 50px;">
+      <div class="navbar-header" style="padding-bottom:15px; padding-top:10px; margin: auto; width: 420px; float: none;">
+        <a class="navbar-brand" href="/"><span style="color : #48bbb4">e-</span><span style="color : #ff6444">YC</span>
+          Yellow Card Verification</a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="row ng-scope">
+    <div style="width: 550px; margin: 0 auto; float: none;">
+      <div class="password-reset-div">
+        <h5 class="custom-page-header text-center"></h5>
+
+        <!-- Table to display policies -->
+        <table class="table" id="policyTable">
+          <thead>
+            <tr>
+              <th colspan="2">
+                <span class="bg-success custom-small-header text-center">
+                  Yellow Card Information
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Policy data will be inserted here by JavaScript -->
+          </tbody>
+        </table>
+
+      </div>
+      <div class="text-center" style="margin-top: 30px;">
+        © 2023 <a href="http://ycmis.comesa.int">COMESA Yellow Card</a> All rights reserved.
+      </div>
+    </div>
+  </div>
+
+  <script src="sql-asm.js"></script>
+  <script>
+    // Initialize sql.js
+    const SQL = initSqlJs({
+      locateFile: file => file
+    });
+
+    // Create a new database in memory
+    const db = new SQL.Database();
+
+    // Create your table (if it doesn't already exist)
+    db.run(`
+      CREATE TABLE IF NOT EXISTS yellow_card_policies (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        verification_timestamp DATETIME,
+        pic_name TEXT,
+        yellow_card_number TEXT UNIQUE,
+        policy_number TEXT,
+        issued_on DATE,
+        issued_timestamp DATETIME,
+        valid_from DATE,
+        valid_upto DATE,
+        customer_name TEXT,
+        vehicle_make TEXT,
+        vehicle_reg_number TEXT,
+        countries_covered TEXT,
+        vehicle_engine_number TEXT,
+        vehicle_chassis_number TEXT,
+        vehicle_color TEXT,
+        no_of_seats INTEGER,
+        issuing_nb_contact TEXT,
+        secretariat_contact TEXT
+      );
+    `);
+
+    // Insert some sample data (for testing - only if the table is empty)
+    const countStmt = db.prepare("SELECT COUNT(*) AS count FROM yellow_card_policies");
+    countStmt.step();
+    const rowCount = countStmt.getAsObject().count;
+    countStmt.free();
+
+    if (rowCount === 0) { // Only add the data if the table is empty
+      db.run(`INSERT INTO yellow_card_policies (pic_name, yellow_card_number, verification_timestamp, policy_number, issued_on, issued_timestamp, valid_from, valid_upto, customer_name, vehicle_make, vehicle_reg_number, countries_covered, vehicle_engine_number, vehicle_chassis_number, vehicle_color, no_of_seats, issuing_nb_contact, secretariat_contact) VALUES ('Sample Insurance Co', 'SAMPLE123', '2025-02-25 14:21:30', 'ICCLA824105937', '2025-02-25', '2025-02-25 11:45:22', '2025-02-25', '2026-05-25', 'ICHEETAH LOG TECH', 'HOWO', 'AD290SF', 'ZM', '', 'LJRB85K2000709', 'WHITE', 0, 'Insurance Council of Zimbabwe', 'COMESA Secretariat');`);
+    }
+
+    function loadPolicies() {
+      const stmt = db.prepare("SELECT * FROM yellow_card_policies");
+      const policies = [];
+
+      while (stmt.step()) {
+        policies.push(stmt.getAsObject());
+      }
+
+      stmt.free();
+      return policies;
+    }
+
+    function populateTable(policies) {
+      const tableBody = document.querySelector('#policyTable tbody');
+      tableBody.innerHTML = ''; // Clear existing content
+
+      policies.forEach(policy => {
+        const row = document.createElement('tr');
+
+        // Helper function to create a cell
+        function createCell(text) {
+          const cell = document.createElement('td');
+          cell.textContent = text || ''; // Handle potential nulls
+          return cell;
+        }
+
+        row.appendChild(createCell("Verification Timestamp"));
+        row.appendChild(createCell(policy.verification_timestamp));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("PIC Name"));
+        row.appendChild(createCell(policy.pic_name));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Yellow Card Number"));
+        row.appendChild(createCell(policy.yellow_card_number));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Policy Number"));
+        row.appendChild(createCell(policy.policy_number));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Issued On"));
+        row.appendChild(createCell(policy.issued_on));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Issued Timestamp"));
+        row.appendChild(createCell(policy.issued_timestamp));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Valid From"));
+        row.appendChild(createCell(policy.valid_from));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Valid Upto"));
+        row.appendChild(createCell(policy.valid_upto));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Customer Name"));
+        row.appendChild(createCell(policy.customer_name));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Vehicle Make"));
+        row.appendChild(createCell(policy.vehicle_make));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Vehicle Reg Number"));
+        row.appendChild(createCell(policy.vehicle_reg_number));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Countries Covered"));
+        row.appendChild(createCell(policy.countries_covered));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Vehicle Engine Number"));
+        row.appendChild(createCell(policy.vehicle_engine_number));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Vehicle Chassis Number"));
+        row.appendChild(createCell(policy.vehicle_chassis_number));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Vehicle Color"));
+        row.appendChild(createCell(policy.vehicle_color));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("No. of Seats"));
+        row.appendChild(createCell(policy.no_of_seats));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Issuing NB Contact"));
+        row.appendChild(createCell(policy.issuing_nb_contact));
+
+        row = document.createElement('tr');
+        row.appendChild(createCell("Secretariat Contact"));
+        row.appendChild(createCell(policy.secretariat_contact));
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Load and populate the table
+    const policies = loadPolicies();
+    populateTable(policies);
+  </script>
+</body>
+
+</html>
