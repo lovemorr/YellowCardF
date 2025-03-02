@@ -74,7 +74,9 @@
           locateFile: file => file
         });
 
-        return new SQL.Database(uint8Array);
+        const db = new SQL.Database(uint8Array);
+        console.log("Is the database valid? : " + db); // <-- Add this line
+        return db;
 
       } catch (error) {
         console.error("Error loading database:", error);
@@ -92,6 +94,7 @@
         function loadPolicies(db) {  //Pass in db
           const stmt = db.prepare("SELECT * FROM yellow_card_policies");
           const policies = [];
+          console.log("What are the valid columns?: " + stmt);
 
           try {
             while (stmt.step()) {
