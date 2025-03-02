@@ -57,158 +57,154 @@
 
   <script src="sql-asm.js"></script>
   <script>
-    // Initialize sql.js
-    const SQL = initSqlJs({
-      locateFile: file => file
-    });
-
-    // Create a new database in memory
-    const db = new SQL.Database();
-
-    // Create your table (if it doesn't already exist)
-    db.run(`
-      CREATE TABLE IF NOT EXISTS yellow_card_policies (
-          yellow_card_number TEXT PRIMARY KEY NOT NULL, -- Primary key is now yellow_card_number
-          verification_timestamp DATETIME,
-          pic_name TEXT,
-          policy_number TEXT,
-          issued_on DATE,
-          issued_timestamp DATETIME,
-          valid_from DATE,
-          valid_upto DATE,
-          customer_name TEXT,
-          vehicle_make TEXT,
-          vehicle_reg_number TEXT,
-          countries_covered TEXT,
-          vehicle_engine_number TEXT,
-          vehicle_chassis_number TEXT,
-          vehicle_color TEXT,
-          no_of_seats INTEGER,
-          issuing_nb_contact TEXT,
-          secretariat_contact TEXT
-      );
-    `);
-
-    // Insert some sample data (for testing - only if the table is empty)
-    const countStmt = db.prepare("SELECT COUNT(*) AS count FROM yellow_card_policies");
-    countStmt.step();
-    const rowCount = countStmt.getAsObject().count;
-    countStmt.free();
-
-    if (rowCount === 0) { // Only add the data if the table is empty
-      db.run(`INSERT INTO yellow_card_policies (pic_name, yellow_card_number, verification_timestamp, policy_number, issued_on, issued_timestamp, valid_from, valid_upto, customer_name, vehicle_make, vehicle_reg_number, countries_covered, vehicle_engine_number, vehicle_chassis_number, vehicle_color, no_of_seats, issuing_nb_contact, secretariat_contact) VALUES ('Sample Insurance Co', 'SAMPLE123', '2025-02-25 14:21:30', 'ICCLA824105937', '2025-02-25', '2025-02-25 11:45:22', '2025-02-25', '2026-05-25', 'ICHEETAH LOG TECH', 'HOWO', 'AD290SF', 'ZM', '', 'LJRB85K2000709', 'WHITE', 0, 'Insurance Council of Zimbabwe', 'COMESA Secretariat');`);
-    }
-
-    function loadPolicies(db) {
-      const stmt = db.prepare("SELECT * FROM yellow_card_policies");
-      const policies = [];
-    
+    // Function to load the database from a file
+    async function loadDatabaseFromFile(dbFileName) {
       try {
-        while (stmt.step()) {
-          policies.push(stmt.getAsObject());
+        const response = await fetch(dbFileName);
+
+        if (!response.ok) {
+          throw new Error(`Failed to load database file: ${response.status} ${response.statusText}`);
         }
+
+        const buffer = await response.arrayBuffer();
+        const uint8Array = new Uint8Array(buffer);
+
+        // Initialize sql.js and load the database
+        const SQL = await initSqlJs({
+          locateFile: file => file
+        });
+
+        return new SQL.Database(uint8Array);
+
       } catch (error) {
-        console.error("Error loading policies:", error);
-        // Optionally, display an error message to the user
-      } finally {
-        stmt.free(); // Always free the statement, even if there's an error
+        console.error("Error loading database:", error);
+        alert("Failed to load database. See console for details.");
+        return null;
       }
-    
-      return policies;
     }
 
-    function populateTable(policies) {
-      const tableBody = document.querySelector('#policyTable tbody');
-      tableBody.innerHTML = ''; // Clear existing content
+    // Load the database and then populate the table
+    async function initializeAndLoad() {
+      const db = await loadDatabaseFromFile('yellow_card.db');  // Replace with the correct path if needed
 
-      policies.forEach(policy => {
-        const row = document.createElement('tr');
+      if (db) { //Only proceed if db loaded successfully.
+        // Function to load policies from the database
+        function loadPolicies(db) {  //Pass in db
+          const stmt = db.prepare("SELECT * FROM yellow_card_policies");
+          const policies = [];
 
-        // Helper function to create a cell
-        function createCell(text) {
-          const cell = document.createElement('td');
-          cell.textContent = text || ''; // Handle potential nulls
-          return cell;
+          try {
+            while (stmt.step()) {
+              policies.push(stmt.getAsObject());
+            }
+          } catch (error) {
+            console.error("Error loading policies:", error);
+            // Optionally, display an error message to the user
+          } finally {
+            stmt.free(); // Always free the statement, even if there's an error
+          }
+
+          return policies;
         }
 
-        row.appendChild(createCell("Verification Timestamp"));
-        row.appendChild(createCell(policy.verification_timestamp));
+        function populateTable(policies) {
+            const tableBody = document.querySelector('#policyTable tbody');
+            tableBody.innerHTML = ''; // Clear existing content
+        
+            policies.forEach(policy => {
+              const row = document.createElement('tr');
+        
+              // Helper function to create a cell
+              function createCell(text) {
+                const cell = document.createElement('td');
+                cell.textContent = text || ''; // Handle potential nulls
+                return cell;
+              }
+        
+              row.appendChild(createCell("Verification Timestamp"));
+              row.appendChild(createCell(policy.verification_timestamp));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("PIC Name"));
+              row.appendChild(createCell(policy.pic_name));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Yellow Card Number"));
+              row.appendChild(createCell(policy.yellow_card_number));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Policy Number"));
+              row.appendChild(createCell(policy.policy_number));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Issued On"));
+              row.appendChild(createCell(policy.issued_on));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Issued Timestamp"));
+              row.appendChild(createCell(policy.issued_timestamp));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Valid From"));
+              row.appendChild(createCell(policy.valid_from));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Valid Upto"));
+              row.appendChild(createCell(policy.valid_upto));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Customer Name"));
+              row.appendChild(createCell(policy.customer_name));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Vehicle Make"));
+              row.appendChild(createCell(policy.vehicle_make));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Vehicle Reg Number"));
+              row.appendChild(createCell(policy.vehicle_reg_number));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Countries Covered"));
+              row.appendChild(createCell(policy.countries_covered));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Vehicle Engine Number"));
+              row.appendChild(createCell(policy.vehicle_engine_number));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Vehicle Chassis Number"));
+              row.appendChild(createCell(policy.vehicle_chassis_number));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Vehicle Color"));
+              row.appendChild(createCell(policy.vehicle_color));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("No. of Seats"));
+              row.appendChild(createCell(policy.no_of_seats));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Issuing NB Contact"));
+              row.appendChild(createCell(policy.issuing_nb_contact));
+        
+              row = document.createElement('tr');
+              row.appendChild(createCell("Secretariat Contact"));
+              row.appendChild(createCell(policy.secretariat_contact));
+        
+              tableBody.appendChild(row);
+            });
+          }
+        
 
-        row = document.createElement('tr');
-        row.appendChild(createCell("PIC Name"));
-        row.appendChild(createCell(policy.pic_name));
+        const policies = loadPolicies(db); //Pass in db
+        populateTable(policies);
 
-        row = document.createElement('tr');
-        row.appendChild(createCell("Yellow Card Number"));
-        row.appendChild(createCell(policy.yellow_card_number));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Policy Number"));
-        row.appendChild(createCell(policy.policy_number));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Issued On"));
-        row.appendChild(createCell(policy.issued_on));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Issued Timestamp"));
-        row.appendChild(createCell(policy.issued_timestamp));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Valid From"));
-        row.appendChild(createCell(policy.valid_from));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Valid Upto"));
-        row.appendChild(createCell(policy.valid_upto));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Customer Name"));
-        row.appendChild(createCell(policy.customer_name));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Vehicle Make"));
-        row.appendChild(createCell(policy.vehicle_make));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Vehicle Reg Number"));
-        row.appendChild(createCell(policy.vehicle_reg_number));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Countries Covered"));
-        row.appendChild(createCell(policy.countries_covered));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Vehicle Engine Number"));
-        row.appendChild(createCell(policy.vehicle_engine_number));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Vehicle Chassis Number"));
-        row.appendChild(createCell(policy.vehicle_chassis_number));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Vehicle Color"));
-        row.appendChild(createCell(policy.vehicle_color));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("No. of Seats"));
-        row.appendChild(createCell(policy.no_of_seats));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Issuing NB Contact"));
-        row.appendChild(createCell(policy.issuing_nb_contact));
-
-        row = document.createElement('tr');
-        row.appendChild(createCell("Secretariat Contact"));
-        row.appendChild(createCell(policy.secretariat_contact));
-
-        tableBody.appendChild(row);
-      });
+      }
     }
 
-    // Load and populate the table
-    const policies = loadPolicies();
-    populateTable(policies);
+    // Call the initialization function
+    initializeAndLoad();
   </script>
 </body>
 
