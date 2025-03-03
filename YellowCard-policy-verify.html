@@ -36,8 +36,10 @@
         <table class="table" id="policyTable">
           <thead>
             <tr>
-              <th>Field</th>
-              <th>Value</th>
+              <th colspan="2">
+                <span class="bg-success custom-small-header text-center" id="tableHeading">
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -56,7 +58,7 @@
   <script>
     let db; // Declare db in the global scope
 
-        // Function to extract a query parameter from the URL
+    // Function to extract a query parameter from the URL
     function getQueryParameter(name) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(name);
@@ -97,11 +99,16 @@
 
       if (!yellowCardNumber) {
         console.log("No yellow_card_number provided in the URL.");
-        document.getElementById('policyTable').innerHTML = "<tr><td>No policy selected. Please provide a yellow_card_number in the URL.</td></tr>";  //Display an error message.
+        document.getElementById('policyTable').innerHTML =
+          "<tr><td>No policy selected. Please provide a yellow_card_number in the URL.</td></tr>"; //Display an error message.
         return;
       }
 
-      db = await loadDatabaseFromFile('yellow_card.db');  // Replace with the correct path if needed
+      //Set the dynamic table heading
+      document.getElementById('tableHeading').textContent = `Yellow Card: ${yellowCardNumber} is Valid`;
+
+
+      db = await loadDatabaseFromFile('yellow_card.db'); // Replace with the correct path if needed
 
       if (db) { //Only proceed if db loaded successfully.
         console.log("Database loaded successfully:", db);
@@ -114,7 +121,9 @@
         } else {
           // Handle the case where no policy was found for that number
           const tableBody = document.querySelector('#policyTable tbody');
-          tableBody.innerHTML = "<tr><td>No policy found with yellow_card_number: " + yellowCardNumber + "</td></tr>";
+          tableBody.innerHTML =
+            "<tr><td colspan='2'>No policy found with yellow_card_number: " + yellowCardNumber +
+            "</td></tr>";
         }
 
 
@@ -126,7 +135,7 @@
     // Loads table after being loaded from file
     async function loadData(db, yellowCardNumber) {
 
-      function loadPolicy(db, yellowCardNumber) {  //Pass in db
+      function loadPolicy(db, yellowCardNumber) { //Pass in db
         const stmt = db.prepare("SELECT * FROM yellow_card_policies WHERE yellow_card_number = ?");
         stmt.bind([yellowCardNumber]);
 
@@ -150,114 +159,166 @@
     }
 
     function populateTable(policies) {
-            const tableBody = document.querySelector('#policyTable tbody');
-            tableBody.innerHTML = ''; // Clear existing content
-    
-            if (!policies || policies.length === 0) {
-                tableBody.innerHTML = "<tr><td colspan='2'>No policies to display.</td></tr>"; // Use colspan to fill both cells
-                return;
-            }
-    
-            policies.forEach(policy => {
-                //Re-declare constants, for ease of management.
-                const verificationTimestamp = "Verification Timestamp";
-                const picName = "PIC Name";
-                const yellowCardNumberr = "Yellow Card Number";
-                const policyNumber = "Policy Number";
-                const issuedOn = "Issued On";
-                const issuedTimestamp = "Issued Timestamp";
-                const validFrom = "Valid From";
-                const validUpto = "Valid Upto";
-                const customerName = "Customer Name";
-                const vehicleMake = "Vehicle Make";
-                const vehicleRegNumber = "Vehicle Reg Number";
-                const countriesCovered = "Countries Covered";
-                const vehicleEngineNumber = "Vehicle Engine Number";
-                const vehicleChassisNumber = "Vehicle Chassis Number";
-                const vehicleColor = "Vehicle Color";
-                const noOfSeats = "No. of Seats";
-                const issuingNBContact = "Issuing NB Contact";
-                const secretariatContact = "Secretariat Contact";
-    
-                let newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = verificationTimestamp;
-                newRow.insertCell().textContent = policy.verification_timestamp ?? '';
-    
-                newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = picName;
-                newRow.insertCell().textContent = policy.pic_name ?? '';
-    
-                newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = yellowCardNumberr;
-                newRow.insertCell().textContent = policy.yellow_card_number ?? '';
-    
-                newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = policyNumber;
-                newRow.insertCell().textContent = policy.policy_number ?? '';
-    
-                newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = issuedOn;
-                newRow.insertCell().textContent = policy.issued_on ?? '';
-    
-                newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = issuedTimestamp;
-                newRow.insertCell().textContent = policy.issued_timestamp ?? '';
-    
-                newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = validFrom;
-                newRow.insertCell().textContent = policy.valid_from ?? '';
-    
-                 newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = validUpto;
-                newRow.insertCell().textContent = policy.valid_upto ?? '';
-    
-                 newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = customerName;
-                newRow.insertCell().textContent = policy.customer_name ?? '';
-    
-                 newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = vehicleMake;
-                newRow.insertCell().textContent = policy.vehicle_make ?? '';
-    
-                 newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = vehicleRegNumber;
-                newRow.insertCell().textContent = policy.vehicle_reg_number ?? '';
-    
-                 newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = countriesCovered;
-                newRow.insertCell().textContent = policy.countries_covered ?? '';
-    
-                 newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = vehicleEngineNumber;
-                newRow.insertCell().textContent = policy.vehicle_engine_number ?? '';
-    
-                 newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = vehicleChassisNumber;
-                newRow.insertCell().textContent = policy.vehicle_chassis_number ?? '';
-    
-                 newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = vehicleColor;
-                newRow.insertCell().textContent = policy.vehicle_color ?? '';
-    
-                 newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = noOfSeats;
-                newRow.insertCell().textContent = policy.no_of_seats ?? '';
-    
-                 newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = issuingNBContact;
-                newRow.insertCell().textContent = policy.issuing_nb_contact ?? '';
-    
-                 newRow = tableBody.insertRow();
-                newRow.insertCell().textContent = secretariatContact;
-                newRow.insertCell().textContent = policy.secretariat_contact ?? '';
-    
-    
-    
-            });
-        }
+      const tableBody = document.querySelector('#policyTable tbody');
+      tableBody.innerHTML = ''; // Clear existing content
+
+      if (!policies || policies.length === 0) {
+        tableBody.innerHTML = "<tr><td colspan='2'>No policies to display.</td></tr>"; // Use colspan to fill both cells
+        return;
+      }
+
+      policies.forEach(policy => {
+        //Re-declare constants, for ease of management.
+        const verificationTimestamp = "Verification Timestamp";
+        const picName = "PIC Name";
+        const yellowCardNumberr = "Yellow Card Number";
+        const policyNumber = "Policy Number";
+        const issuedOn = "Issued On";
+        const issuedTimestamp = "Issued Timestamp";
+        const validFrom = "Valid From";
+        const validUpto = "Valid Upto";
+        const customerName = "Customer Name";
+        const vehicleMake = "Vehicle Make";
+        const vehicleRegNumber = "Vehicle Reg Number";
+        const countriesCovered = "Countries Covered";
+        const vehicleEngineNumber = "Vehicle Engine Number";
+        const vehicleChassisNumber = "Vehicle Chassis Number";
+        const vehicleColor = "Vehicle Color";
+        const noOfSeats = "No. of Seats";
+        const issuingNBContact = "Issuing NB Contact";
+        const secretariatContact = "Secretariat Contact";
+
+        let newRow = tableBody.insertRow();
+        let cell1 = newRow.insertCell();
+        cell1.width = "40%"; // Setting width for first cell as per Code 1
+        cell1.textContent = verificationTimestamp;
+        let cell2 = newRow.insertCell();
+        cell2.textContent = policy.verification_timestamp ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = picName;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.pic_name ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = yellowCardNumberr;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.yellow_card_number ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = policyNumber;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.policy_number ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = issuedOn;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.issued_on ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = issuedTimestamp;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.issued_timestamp ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = validFrom;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.valid_from ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = validUpto;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.valid_upto ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = customerName;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.customer_name ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = vehicleMake;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.vehicle_make ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = vehicleRegNumber;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.vehicle_reg_number ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = countriesCovered;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.countries_covered ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = vehicleEngineNumber;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.vehicle_engine_number ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = vehicleChassisNumber;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.vehicle_chassis_number ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = vehicleColor;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.vehicle_color ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = noOfSeats;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.no_of_seats ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = issuingNBContact;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.issuing_nb_contact ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = secretariatContact;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.secretariat_contact ?? '';
+
+      });
+    }
 
 
-        // Call the initialization function
+    // Call the initialization function
     initializeAndLoad();
   </script>
 </body>
