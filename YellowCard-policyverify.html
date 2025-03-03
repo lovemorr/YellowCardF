@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+  <title>e-YC | Yellow Card Verification</title>
+
+  <!-- App CSS -->
+  <link href="css/app.bundle.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Navigation -->
+  <div style="border-bottom: #e2e2e2 1px solid;">
+    <nav class="navbar navbar-static-top" role="navigation"
+      style="margin-bottom: 0; padding-left: 50px; padding-right: 50px;">
+      <div class="navbar-header" style="padding-bottom:15px; padding-top:10px; margin: auto; width: 420px; float: none;">
+        <a class="navbar-brand" href="/"><span style="color : #48bbb4">e-</span><span style="color : #ff6444">YC</span>
+          Yellow Card Verification</a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="row ng-scope">
+    <div style="width: 550px; margin: 0 auto; float: none;">
+      <div class="password-reset-div">
+        <h5 class="custom-page-header text-center"></h5>
+
+        <!-- Table to display policies -->
+        <table class="table" id="policyTable">
+          <thead>
+            <tr>
+              <th colspan="2">
+                <span class="bg-success custom-small-header text-center" id="tableHeading">
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Policy data will be inserted here by JavaScript -->
+          </tbody>
+        </table>
+
+      </div>
+      <div class="text-center" style="margin-top: 30px;">
+        © 2023 <a href="http://ycmis.comesa.int">COMESA Yellow Card</a> All rights reserved.
+      </div>
+    </div>
+  </div>
+
+  <script src="sql-asm.js"></script>
+  <script>
+    let db; // Declare db in the global scope
+
+    // Function to extract a query parameter from the URL
+    function getQueryParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    // Function to load the database from a file
+    async function loadDatabaseFromFile(dbFileName) {
+      try {
+        const response = await fetch(dbFileName);
+
+        if (!response.ok) {
+          throw new Error(`Failed to load database file: ${response.status} ${response.statusText}`);
+        }
+
+        const buffer = await response.arrayBuffer();
+        const uint8Array = new Uint8Array(buffer);
+
+        // Initialize sql.js and load the database
+        const SQL = await initSqlJs({
+          locateFile: file => file
+        });
+
+        db = new SQL.Database(uint8Array); // Assign the loaded database to the global variable
+        console.log("Is the database valid? : " + db); // <-- Add this line
+        return db;
+
+      } catch (error) {
+        console.error("Error loading database:", error);
+        alert("Failed to load database. See console for details.");
+        return null;
+      }
+    }
+
+    // Function to format the date
+    function formatDate(date) {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+      const year = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+
+      return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+    }
+
+    // Load the database and then populate the table
+    async function initializeAndLoad() {
+      console.log("Starting initializeAndLoad()");
+      const yellowCardNumber = getQueryParameter('yellow_card_number'); // Get the yellow_card_number
+
+      if (!yellowCardNumber) {
+        console.log("No yellow_card_number provided in the URL.");
+        document.getElementById('policyTable').innerHTML =
+          "<tr><td>No policy selected. Please provide a yellow_card_number in the URL.</td></tr>"; //Display an error message.
+        return;
+      }
+
+      //Set the dynamic table heading
+      document.getElementById('tableHeading').textContent = `Yellow Card: ${yellowCardNumber} is Valid`;
+
+
+      db = await loadDatabaseFromFile('yellow_card.db'); // Replace with the correct path if needed
+
+      if (db) { //Only proceed if db loaded successfully.
+        console.log("Database loaded successfully:", db);
+
+        // Call loadData after database is loaded
+        const policy = await loadData(db, yellowCardNumber);
+
+        if (policy) {
+          populateTable([policy]);
+        } else {
+          // Handle the case where no policy was found for that number
+          const tableBody = document.querySelector('#policyTable tbody');
+          tableBody.innerHTML =
+            "<tr><td colspan='2'>No policy found with yellow_card_number: " + yellowCardNumber +
+            "</td></tr>";
+        }
+
+
+      } else {
+        console.log("Database failed to load.  Exiting.");
+      }
+    }
+
+    // Loads table after being loaded from file
+    async function loadData(db, yellowCardNumber) {
+
+      function loadPolicy(db, yellowCardNumber) { //Pass in db
+        const stmt = db.prepare("SELECT * FROM yellow_card_policies WHERE yellow_card_number = ?");
+        stmt.bind([yellowCardNumber]);
+
+        let policy = null;
+
+        try {
+          if (stmt.step()) {
+            policy = stmt.getAsObject();
+          }
+        } catch (error) {
+          console.error("Error loading policy:", error);
+          // Optionally, display an error message to the user
+        } finally {
+          stmt.free(); // Always free the statement, even if there's an error
+        }
+
+        return policy;
+      }
+      const policy = loadPolicy(db, yellowCardNumber);
+      return policy
+    }
+
+    function populateTable(policies) {
+      const tableBody = document.querySelector('#policyTable tbody');
+      tableBody.innerHTML = ''; // Clear existing content
+
+      if (!policies || policies.length === 0) {
+        tableBody.innerHTML = "<tr><td colspan='2'>No policies to display.</td></tr>"; // Use colspan to fill both cells
+        return;
+      }
+
+      policies.forEach(policy => {
+        //Re-declare constants, for ease of management.
+        const verificationTimestamp = "Verification Timestamp";
+        const picName = "PIC Name";
+        const yellowCardNumberr = "Yellow Card Number";
+        const policyNumber = "Policy Number";
+        const issuedOn = "Issued On";
+        const issuedTimestamp = "Issued Timestamp";
+        const validFrom = "Valid From";
+        const validUpto = "Valid Upto";
+        const customerName = "Customer Name";
+        const vehicleMake = "Vehicle Make";
+        const vehicleRegNumber = "Vehicle Reg Number";
+        const countriesCovered = "Countries Covered";
+        const vehicleEngineNumber = "Vehicle Engine Number";
+        const vehicleChassisNumber = "Vehicle Chassis Number";
+        const vehicleColor = "Vehicle Color";
+        const noOfSeats = "No. of Seats";
+        const issuingNBContact = "Issuing NB Contact";
+        const secretariatContact = "Secretariat Contact";
+
+        // Get the current date and time
+        const now = new Date();
+        const formattedDateTime = formatDate(now);
+
+        let newRow = tableBody.insertRow();
+        let cell1 = newRow.insertCell();
+        cell1.width = "40%"; // Setting width for first cell as per Code 1
+        cell1.textContent = verificationTimestamp;
+        let cell2 = newRow.insertCell();
+        // Use the formatted date and time
+        cell2.textContent = formattedDateTime;
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = picName;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.pic_name ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = yellowCardNumberr;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.yellow_card_number ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = policyNumber;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.policy_number ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = issuedOn;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.issued_on ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = issuedTimestamp;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.issued_timestamp ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = validFrom;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.valid_from ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = validUpto;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.valid_upto ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = customerName;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.customer_name ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = vehicleMake;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.vehicle_make ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = vehicleRegNumber;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.vehicle_reg_number ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = countriesCovered;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.countries_covered ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = vehicleEngineNumber;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.vehicle_engine_number ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = vehicleChassisNumber;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.vehicle_chassis_number ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = vehicleColor;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.vehicle_color ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = noOfSeats;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.no_of_seats ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = issuingNBContact;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.issuing_nb_contact ?? '';
+
+        newRow = tableBody.insertRow();
+        cell1 = newRow.insertCell();
+        cell1.width = "40%";
+        cell1.textContent = secretariatContact;
+        cell2 = newRow.insertCell();
+        cell2.textContent = policy.secretariat_contact ?? '';
+
+      });
+    }
+
+
+    // Call the initialization function
+    initializeAndLoad();
+  </script>
+</body>
+
+</html>
