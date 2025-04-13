@@ -50,6 +50,11 @@
             width: 40%;
             font-weight: bold; /* Make labels bold */
         }
+         /* Optional: Style for empty table body when invalid */
+        #policyTableBody.invalid-card-body td {
+             font-style: italic;
+             color: #6c757d; /* Bootstrap secondary color */
+        }
     </style>
 </head>
 
@@ -151,9 +156,10 @@
         function displayError(message) {
             console.error("Displaying Error:", message); // Log for developers
             tableHeading.textContent = 'Error Occurred';
-            tableHeading.classList.remove('bg-success', 'bg-danger'); // Remove status colors
+            tableHeading.className = 'custom-small-header text-center'; // Reset class to default/neutral
             // Display error in the table body using the error message style
             tableBody.innerHTML = `<tr><td colspan="2" class="error-message">${message}</td></tr>`;
+            tableBody.className = ''; // Reset table body class
         }
 
         function formatDate(date) {
@@ -173,26 +179,19 @@
 
         async function loadDatabaseFromFile(dbFileName) {
             try {
-                // Initialize sql.js. Assumes sql-asm.js loaded initSqlJs globally.
-                // locateFile assumes the .wasm file is in the same directory as sql-asm.js
-                const SQL = await initSqlJs({ locateFile: file => `./${file}` }); // Use relative path explicitly
-
+                const SQL = await initSqlJs({ locateFile: file => `./${file}` });
                 console.log("Fetching database file:", dbFileName);
                 const response = await fetch(dbFileName);
-
                 if (!response.ok) {
                     throw new Error(`Failed to load database file '${dbFileName}': ${response.status} ${response.statusText}. Check if the file exists and the path is correct.`);
                 }
-
                 const buffer = await response.arrayBuffer();
                 console.log("Database file fetched, size:", buffer.byteLength);
                 const uint8Array = new Uint8Array(buffer);
-
                 console.log("Initializing SQL.js database from buffer...");
                 const db = new SQL.Database(uint8Array);
                 console.log("SQL.js Database initialized successfully.");
                 return db;
-
             } catch (error) {
                 displayError(`Error loading database: ${error.message}`);
                 console.error("Detailed error during database load:", error);
@@ -202,41 +201,38 @@
 
         function loadPolicy(db, yellowCardNumber) {
             let policy = null;
-            let stmt = null; // Declare stmt outside try
+            let stmt = null;
             try {
-                 // Use named parameter for clarity
                 stmt = db.prepare("SELECT * FROM yellow_card_policies WHERE yellow_card_number = :ycn");
                 stmt.bind({ ':ycn': yellowCardNumber });
                 console.log(`Executing query for yellow_card_number: ${yellowCardNumber}`);
-
-                if (stmt.step()) { // step() returns true if a row was found
+                if (stmt.step()) {
                     policy = stmt.getAsObject();
                     console.log("Policy found in database:", policy);
                 } else {
                     console.log("No policy found in database for:", yellowCardNumber);
                 }
             } catch (error) {
-                // Display specific SQL errors if helpful
                 displayError(`Error querying policy data: ${error.message}`);
                 console.error("SQL Query Error:", error);
             } finally {
                 if (stmt) {
-                    stmt.free(); // Essential: Always free the statement memory
+                    stmt.free();
                     console.log("SQL statement freed.");
                 }
             }
-            return policy; // Returns the policy object or null
+            return policy;
         }
 
 
         // --- Table Population Function ---
 
         function populateTable(policy) {
-            tableBody.innerHTML = ''; // Clear "Initializing..." or previous content
+            tableBody.innerHTML = ''; // Clear previous content (like loading/error messages)
+            tableBody.className = ''; // Reset any special class
 
-            // Define the fields to display: [Label shown on page, key_in_policy_object]
             const fields = [
-                ["Verification Timestamp", "verification_timestamp"], // Special case handled below
+                ["Verification Timestamp", "verification_timestamp"],
                 ["PIC Name", "pic_name"],
                 ["Yellow Card Number", "yellow_card_number"],
                 ["Policy Number", "policy_number"],
@@ -256,24 +252,20 @@
                 ["Secretariat Contact", "secretariat_contact"]
             ];
 
-            // Get the current date and time for verification timestamp
             const verificationTime = formatDate(new Date());
 
             fields.forEach(([label, key]) => {
                 const row = tableBody.insertRow();
                 const cell1 = row.insertCell();
-                // cell1 styling applied via CSS (#policyTableBody td:first-child)
                 cell1.textContent = label;
-
                 const cell2 = row.insertCell();
                 if (key === "verification_timestamp") {
                     cell2.textContent = verificationTime;
                 } else {
-                    // Use nullish coalescing (??) to show empty string if DB value is null/undefined
                     cell2.textContent = policy[key] ?? '';
                 }
             });
-             console.log("Table populated with policy data.");
+            console.log("Table populated with policy data.");
         }
 
 
@@ -281,74 +273,75 @@
 
         async function initializeAndLoad() {
             console.log("Starting initializeAndLoad function...");
-            tableBody.innerHTML = '<tr><td colspan="2">Loading policy details... Please wait.</td></tr>'; // Update loading message
+            tableBody.innerHTML = '<tr><td colspan="2">Loading policy details... Please wait.</td></tr>';
+            tableBody.className = ''; // Ensure no special class initially
 
             const yellowCardNumber = getQueryParameter('yellow_card_number');
 
             if (!yellowCardNumber) {
                 displayError("No Yellow Card number provided in the URL. Please add '?yellow_card_number=YOUR_NUMBER' to the web address.");
-                return; // Stop execution if no number provided
+                return;
             }
 
-            // Dynamically set the initial table heading while checking
             tableHeading.textContent = `Checking Yellow Card: ${yellowCardNumber}...`;
-            tableHeading.classList.remove('bg-danger', 'bg-success'); // Reset status classes
+            tableHeading.className = 'custom-small-header text-center'; // Reset class
 
-            // Load the database (ensure 'yellow_card.db' is accessible from this HTML's location)
             const db = await loadDatabaseFromFile('yellow_card.db');
 
             if (db) {
                 console.log("Database handle obtained. Loading policy details...");
-                const policy = loadPolicy(db, yellowCardNumber); // Attempt to load the policy
+                const policy = loadPolicy(db, yellowCardNumber);
 
                 if (policy) {
-                    // Policy was found in the database, now check against the invalid list
+                    // Policy FOUND in the database
                     console.log(`Checking validity status for: ${yellowCardNumber}`);
                     const isInvalid = INVALID_YELLOW_CARD_NUMBERS.includes(yellowCardNumber);
 
                     if (isInvalid) {
-                        // Number is on the blacklist
+                        // Policy is FOUND but is on the INVALID list
                         console.log(`Status: ${yellowCardNumber} is marked as INVALID.`);
                         tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Invalid`;
-                        tableHeading.classList.remove('bg-success'); // Remove green if present
-                        tableHeading.classList.add('bg-danger');    // Add red
+                        tableHeading.className = 'custom-small-header text-center bg-danger'; // Set header to red
+
+                        // *** REQUIREMENT CHANGE: Do NOT populate table for invalid cards ***
+                        tableBody.innerHTML = '<tr><td colspan="2">Details not displayed for invalid card.</td></tr>'; // Clear body or show message
+                        tableBody.className = 'invalid-card-body'; // Optional: add class for specific styling
+
+                        console.log("Table population skipped for invalid card.");
+
                     } else {
-                        // Number is NOT on the blacklist (considered valid)
+                        // Policy is FOUND and is NOT on the invalid list (VALID)
                         console.log(`Status: ${yellowCardNumber} is considered VALID.`);
                         tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Valid`;
-                        tableHeading.classList.remove('bg-danger');  // Remove red if present
-                        tableHeading.classList.add('bg-success');  // Add green
+                        tableHeading.className = 'custom-small-header text-center bg-success'; // Set header to green
+
+                        // *** Populate table ONLY if valid ***
+                        populateTable(policy);
                     }
 
-                    // Populate the table with the details found in the DB, regardless of valid/invalid status
-                    populateTable(policy);
-
                 } else {
-                    // Policy number was NOT found in the database after successful DB load
-                     displayError(`No policy data found in the database for Yellow Card number: ${yellowCardNumber}`);
+                    // Policy was NOT FOUND in the database
+                    // loadPolicy would have already called displayError if an SQL error occurred,
+                    // but if it just returned null (not found), we display the specific 'not found' error.
+                    // We check if an error wasn't already displayed to avoid double messages.
+                    if (!tableBody.querySelector('.error-message')) {
+                         displayError(`No policy data found in the database for Yellow Card number: ${yellowCardNumber}`);
+                    }
                 }
 
-                // Optional: Close the database connection if it's definitely not needed anymore on this page
-                // try {
-                //     db.close();
-                //     console.log("Database closed.");
-                // } catch (closeError) {
-                //     console.error("Error closing database:", closeError);
-                // }
+                // Optional: Close DB
+                // try { db.close(); console.log("Database closed."); } catch (e) { console.error("Error closing DB", e); }
 
             } else {
-                // Database loading failed, error message already displayed by loadDatabaseFromFile
+                // Database loading failed. displayError was already called inside loadDatabaseFromFile.
                 console.log("Initialization stopped because database could not be loaded.");
-                // No need to call displayError again here, it was called inside loadDatabaseFromFile
             }
         }
 
         // --- Start the application ---
-        // Add event listener to run the script after the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', (event) => {
              initializeAndLoad();
         });
-
 
     </script>
 </body>
