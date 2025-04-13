@@ -14,39 +14,46 @@
     <!-- App CSS (Assuming this defines .bg-success, .custom-small-header etc.) -->
     <link href="css/app.bundle.css" rel="stylesheet">
 
+    <!-- === Add this section if 'Porient One' is a Google Font === -->
+    <!--
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Porient+One&display=swap" rel="stylesheet">
+    -->
+    <!-- === Or load the font using @font-face if hosted locally === -->
+
     <!-- Custom Styles -->
     <style>
         /* Style for error messages shown in the table body */
         .error-message {
-            color: #721c24; /* Dark red */
-            background-color: #f8d7da; /* Light red */
+            color: #721c24;
+            background-color: #f8d7da;
             padding: 0.75rem 1.25rem;
-            border: 1px solid #f5c6cb; /* Lighter red border */
+            border: 1px solid #f5c6cb;
             border-radius: 0.25rem;
         }
 
         /* Style for the header span (#tableHeading) */
         #tableHeading {
-             /* Basic block behavior and spacing, potentially overridden/enhanced by app.bundle.css */
              display: block;
              margin-bottom: 1rem;
-             /* text-align: center; is already applied via class */
-             /* padding, border, border-radius should come from .custom-small-header or .bg-* classes in app.bundle.css */
+             /* Base styles like padding/border should come from .custom-small-header */
+             /* text-align: center; applied via class */
         }
 
         /* --- Style Adjustments --- */
 
-        /* REMOVED: .bg-success rule. We now rely entirely on app.bundle.css for the green 'Valid' style */
-        /* Ensure app.bundle.css defines .bg-success appropriately */
+        /* We rely entirely on app.bundle.css for the green 'Valid' style via .bg-success */
 
-        /* Red 'Invalid' style */
+        /* Red 'Invalid' style - Precise user request */
         .bg-danger {
-            color: #721c24;            /* Dark red text */
-            background-color: #f8d7da;  /* Light red background (similar feel to default success) */
-            border-color: #f5c6cb;      /* Matching border color (if app.bundle.css adds borders) */
-            font-style: italic;         /* Make text italic as requested */
-            /* We assume padding, font-size, border-radius etc. are handled by the base classes */
-            /* like 'custom-small-header' defined in app.bundle.css for consistency */
+            background-color: #F2DEDE;          /* Specific light red background */
+            color: #808080;                  /* Specific gray text color */
+            font-family: 'Porient One', sans-serif; /* Specific font family (ensure loaded!) + fallback */
+            font-size: 22px;                   /* Specific font size */
+            font-style: italic;                /* Keep italic style */
+            /* Remove specific border-color unless needed */
+            /* Padding, border-radius etc. should come from base classes */
         }
         /* --- End Style Adjustments --- */
 
@@ -54,14 +61,14 @@
         /* Style first column of the table body */
         #policyTableBody td:first-child {
             width: 40%;
-            font-weight: bold; /* Make labels bold */
+            font-weight: bold;
         }
 
          /* Optional: Style for empty table body when invalid */
         #policyTableBody.invalid-card-body td {
-             padding: 0.75rem 1.25rem; /* Add padding to make message visible */
+             padding: 0.75rem 1.25rem;
              font-style: italic;
-             color: #6c757d; /* Bootstrap secondary color */
+             color: #6c757d;
              text-align: center;
         }
     </style>
@@ -91,7 +98,6 @@
                     <thead>
                         <tr>
                             <th colspan="2">
-                                <!-- Initial classes should match expected base style -->
                                 <span class="custom-small-header text-center" id="tableHeading">
                                     Loading...
                                 </span>
@@ -99,7 +105,6 @@
                         </tr>
                     </thead>
                     <tbody id="policyTableBody">
-                        <!-- Policy data will be inserted here by JavaScript -->
                         <tr><td colspan="2">Initializing... Please wait.</td></tr>
                     </tbody>
                 </table>
@@ -153,9 +158,11 @@
             "ZW68231745", "ZW76182395", "ZW93725184", "ZW34589172"
         ];
 
-
         // --- Helper Functions ---
-
+        function getQueryParameter(name) { /* ... */ }
+        function displayError(message) { /* ... */ }
+        function formatDate(date) { /* ... */ }
+        // ... (rest of helper functions are unchanged) ...
         function getQueryParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
@@ -164,7 +171,6 @@
         function displayError(message) {
             console.error("Displaying Error:", message);
             tableHeading.textContent = 'Error Occurred';
-            // Use classList to only remove status classes, keeping base classes
             tableHeading.classList.remove('bg-success', 'bg-danger');
             tableBody.innerHTML = `<tr><td colspan="2" class="error-message">${message}</td></tr>`;
             tableBody.className = ''; // Reset table body class
@@ -182,8 +188,10 @@
         }
 
         // --- Database Functions ---
-
-        async function loadDatabaseFromFile(dbFileName) {
+        async function loadDatabaseFromFile(dbFileName) { /* ... */ }
+        function loadPolicy(db, yellowCardNumber) { /* ... */ }
+        // ... (rest of database functions are unchanged) ...
+         async function loadDatabaseFromFile(dbFileName) {
             try {
                 const SQL = await initSqlJs({ locateFile: file => `./${file}` });
                 console.log("Fetching database file:", dbFileName);
@@ -225,9 +233,11 @@
             return policy;
         }
 
-        // --- Table Population Function ---
 
-        function populateTable(policy) {
+        // --- Table Population Function ---
+        function populateTable(policy) { /* ... */ }
+        // ... (table population function is unchanged) ...
+         function populateTable(policy) {
             tableBody.innerHTML = '';
             tableBody.className = ''; // Reset any special class
 
@@ -254,7 +264,7 @@
         }
 
         // --- Main Initialization Logic ---
-
+        // (This function remains the same as the previous version, it just adds/removes classes)
         async function initializeAndLoad() {
             console.log("Starting initializeAndLoad function...");
             tableBody.innerHTML = '<tr><td colspan="2">Loading policy details... Please wait.</td></tr>';
@@ -268,8 +278,7 @@
             }
 
             tableHeading.textContent = `Checking Yellow Card: ${yellowCardNumber}...`;
-            // Use classList to preserve base classes from HTML
-            tableHeading.classList.remove('bg-success', 'bg-danger');
+            tableHeading.classList.remove('bg-success', 'bg-danger'); // Use classList
 
             const db = await loadDatabaseFromFile('yellow_card.db');
 
@@ -278,47 +287,37 @@
                 const policy = loadPolicy(db, yellowCardNumber);
 
                 if (policy) {
-                    // Policy FOUND in the database
                     console.log(`Checking validity status for: ${yellowCardNumber}`);
                     const isInvalid = INVALID_YELLOW_CARD_NUMBERS.includes(yellowCardNumber);
 
                     if (isInvalid) {
-                        // Policy is FOUND but is on the INVALID list
                         console.log(`Status: ${yellowCardNumber} is marked as INVALID.`);
                         tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Invalid`;
-                        // Use classList.add/remove to manage styles
                         tableHeading.classList.remove('bg-success');
-                        tableHeading.classList.add('bg-danger'); // Add red, italic style defined in CSS
+                        tableHeading.classList.add('bg-danger'); // Add the specifically styled .bg-danger class
 
-                        // Do NOT populate table for invalid cards
                         tableBody.innerHTML = '<tr><td colspan="2">Details not displayed for invalid card.</td></tr>';
-                        tableBody.className = 'invalid-card-body'; // Add class for specific styling
+                        tableBody.className = 'invalid-card-body';
                         console.log("Table population skipped for invalid card.");
 
                     } else {
-                        // Policy is FOUND and is NOT on the invalid list (VALID)
                         console.log(`Status: ${yellowCardNumber} is considered VALID.`);
                         tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Valid`;
-                         // Use classList.add/remove to manage styles
                         tableHeading.classList.remove('bg-danger');
                         tableHeading.classList.add('bg-success'); // Add original green style via class
 
-                        // Populate table ONLY if valid
                         populateTable(policy);
                     }
 
                 } else {
-                    // Policy was NOT FOUND in the database
-                    if (!tableBody.querySelector('.error-message')) { // Avoid double errors
+                    if (!tableBody.querySelector('.error-message')) {
                          displayError(`No policy data found in the database for Yellow Card number: ${yellowCardNumber}`);
                     }
                 }
-
                 // Optional: Close DB
                 // try { db.close(); console.log("Database closed."); } catch (e) { console.error("Error closing DB", e); }
 
             } else {
-                // Database loading failed. displayError was already called.
                 console.log("Initialization stopped because database could not be loaded.");
             }
         }
