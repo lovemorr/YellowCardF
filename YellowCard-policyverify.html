@@ -11,12 +11,12 @@
 
     <title>e-YC | Yellow Card Verification</title>
 
-    <!-- App CSS -->
+    <!-- App CSS (Assuming this defines .bg-success, .custom-small-header etc.) -->
     <link href="css/app.bundle.css" rel="stylesheet">
 
-    <!-- Custom Styles (including those needed if not in app.bundle.css) -->
+    <!-- Custom Styles -->
     <style>
-        /* Style for error messages */
+        /* Style for error messages shown in the table body */
         .error-message {
             color: #721c24; /* Dark red */
             background-color: #f8d7da; /* Light red */
@@ -24,36 +24,45 @@
             border: 1px solid #f5c6cb; /* Lighter red border */
             border-radius: 0.25rem;
         }
-        /* Ensure table header span takes full width and has padding/border */
+
+        /* Style for the header span (#tableHeading) */
         #tableHeading {
-             display: block; /* Make span behave like a block */
-             padding: 0.75rem 1.25rem;
-             border: 1px solid transparent;
-             border-radius: 0.25rem;
-             text-align: center; /* Center text */
-             margin-bottom: 1rem; /* Add some space below */
+             /* Basic block behavior and spacing, potentially overridden/enhanced by app.bundle.css */
+             display: block;
+             margin-bottom: 1rem;
+             /* text-align: center; is already applied via class */
+             /* padding, border, border-radius should come from .custom-small-header or .bg-* classes in app.bundle.css */
         }
-        /* Success background (Green) */
-        .bg-success {
-            color: #155724;
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-        }
-        /* Danger background (Red) */
+
+        /* --- Style Adjustments --- */
+
+        /* REMOVED: .bg-success rule. We now rely entirely on app.bundle.css for the green 'Valid' style */
+        /* Ensure app.bundle.css defines .bg-success appropriately */
+
+        /* Red 'Invalid' style */
         .bg-danger {
-            color: #721c24;
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
+            color: #721c24;            /* Dark red text */
+            background-color: #f8d7da;  /* Light red background (similar feel to default success) */
+            border-color: #f5c6cb;      /* Matching border color (if app.bundle.css adds borders) */
+            font-style: italic;         /* Make text italic as requested */
+            /* We assume padding, font-size, border-radius etc. are handled by the base classes */
+            /* like 'custom-small-header' defined in app.bundle.css for consistency */
         }
+        /* --- End Style Adjustments --- */
+
+
         /* Style first column of the table body */
         #policyTableBody td:first-child {
             width: 40%;
             font-weight: bold; /* Make labels bold */
         }
+
          /* Optional: Style for empty table body when invalid */
         #policyTableBody.invalid-card-body td {
+             padding: 0.75rem 1.25rem; /* Add padding to make message visible */
              font-style: italic;
              color: #6c757d; /* Bootstrap secondary color */
+             text-align: center;
         }
     </style>
 </head>
@@ -81,8 +90,8 @@
                 <table class="table" id="policyTable">
                     <thead>
                         <tr>
-                            <!-- Header span now correctly styled via CSS -->
                             <th colspan="2">
+                                <!-- Initial classes should match expected base style -->
                                 <span class="custom-small-header text-center" id="tableHeading">
                                     Loading...
                                 </span>
@@ -102,8 +111,7 @@
         </div>
     </div>
 
-    <!-- Make sure sql-asm.js is served correctly -->
-    <!-- It often requires a companion .wasm file (e.g., sql-wasm.wasm) in the same dir -->
+    <!-- sql.js -->
     <script src="sql-asm.js"></script>
 
     <script>
@@ -154,20 +162,18 @@
         }
 
         function displayError(message) {
-            console.error("Displaying Error:", message); // Log for developers
+            console.error("Displaying Error:", message);
             tableHeading.textContent = 'Error Occurred';
-            tableHeading.className = 'custom-small-header text-center'; // Reset class to default/neutral
-            // Display error in the table body using the error message style
+            // Use classList to only remove status classes, keeping base classes
+            tableHeading.classList.remove('bg-success', 'bg-danger');
             tableBody.innerHTML = `<tr><td colspan="2" class="error-message">${message}</td></tr>`;
             tableBody.className = ''; // Reset table body class
         }
 
         function formatDate(date) {
-            if (!(date instanceof Date) || isNaN(date)) {
-                return 'Invalid Date'; // Handle potential invalid date objects
-            }
+            if (!(date instanceof Date) || isNaN(date)) { return 'Invalid Date'; }
             const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+            const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = date.getFullYear();
             const hours = String(date.getHours()).padStart(2, '0');
             const minutes = String(date.getMinutes()).padStart(2, '0');
@@ -182,9 +188,7 @@
                 const SQL = await initSqlJs({ locateFile: file => `./${file}` });
                 console.log("Fetching database file:", dbFileName);
                 const response = await fetch(dbFileName);
-                if (!response.ok) {
-                    throw new Error(`Failed to load database file '${dbFileName}': ${response.status} ${response.statusText}. Check if the file exists and the path is correct.`);
-                }
+                if (!response.ok) { throw new Error(`Failed to load database file '${dbFileName}': ${response.status} ${response.statusText}.`); }
                 const buffer = await response.arrayBuffer();
                 console.log("Database file fetched, size:", buffer.byteLength);
                 const uint8Array = new Uint8Array(buffer);
@@ -216,65 +220,45 @@
                 displayError(`Error querying policy data: ${error.message}`);
                 console.error("SQL Query Error:", error);
             } finally {
-                if (stmt) {
-                    stmt.free();
-                    console.log("SQL statement freed.");
-                }
+                if (stmt) { stmt.free(); console.log("SQL statement freed."); }
             }
             return policy;
         }
 
-
         // --- Table Population Function ---
 
         function populateTable(policy) {
-            tableBody.innerHTML = ''; // Clear previous content (like loading/error messages)
+            tableBody.innerHTML = '';
             tableBody.className = ''; // Reset any special class
 
             const fields = [
-                ["Verification Timestamp", "verification_timestamp"],
-                ["PIC Name", "pic_name"],
-                ["Yellow Card Number", "yellow_card_number"],
-                ["Policy Number", "policy_number"],
-                ["Issued On", "issued_on"],
-                ["Issued Timestamp", "issued_timestamp"],
-                ["Valid From", "valid_from"],
-                ["Valid Upto", "valid_upto"],
-                ["Customer Name", "customer_name"],
-                ["Vehicle Make", "vehicle_make"],
-                ["Vehicle Reg Number", "vehicle_reg_number"],
-                ["Countries Covered", "countries_covered"],
-                ["Vehicle Engine Number", "vehicle_engine_number"],
-                ["Vehicle Chassis Number", "vehicle_chassis_number"],
-                ["Vehicle Color", "vehicle_color"],
-                ["No. of Seats", "no_of_seats"],
-                ["Issuing NB Contact", "issuing_nb_contact"],
-                ["Secretariat Contact", "secretariat_contact"]
+                ["Verification Timestamp", "verification_timestamp"], ["PIC Name", "pic_name"],
+                ["Yellow Card Number", "yellow_card_number"], ["Policy Number", "policy_number"],
+                ["Issued On", "issued_on"], ["Issued Timestamp", "issued_timestamp"],
+                ["Valid From", "valid_from"], ["Valid Upto", "valid_upto"],
+                ["Customer Name", "customer_name"], ["Vehicle Make", "vehicle_make"],
+                ["Vehicle Reg Number", "vehicle_reg_number"], ["Countries Covered", "countries_covered"],
+                ["Vehicle Engine Number", "vehicle_engine_number"], ["Vehicle Chassis Number", "vehicle_chassis_number"],
+                ["Vehicle Color", "vehicle_color"], ["No. of Seats", "no_of_seats"],
+                ["Issuing NB Contact", "issuing_nb_contact"], ["Secretariat Contact", "secretariat_contact"]
             ];
-
             const verificationTime = formatDate(new Date());
 
             fields.forEach(([label, key]) => {
                 const row = tableBody.insertRow();
-                const cell1 = row.insertCell();
-                cell1.textContent = label;
+                const cell1 = row.insertCell(); cell1.textContent = label;
                 const cell2 = row.insertCell();
-                if (key === "verification_timestamp") {
-                    cell2.textContent = verificationTime;
-                } else {
-                    cell2.textContent = policy[key] ?? '';
-                }
+                cell2.textContent = (key === "verification_timestamp") ? verificationTime : (policy[key] ?? '');
             });
             console.log("Table populated with policy data.");
         }
-
 
         // --- Main Initialization Logic ---
 
         async function initializeAndLoad() {
             console.log("Starting initializeAndLoad function...");
             tableBody.innerHTML = '<tr><td colspan="2">Loading policy details... Please wait.</td></tr>';
-            tableBody.className = ''; // Ensure no special class initially
+            tableBody.className = '';
 
             const yellowCardNumber = getQueryParameter('yellow_card_number');
 
@@ -284,7 +268,8 @@
             }
 
             tableHeading.textContent = `Checking Yellow Card: ${yellowCardNumber}...`;
-            tableHeading.className = 'custom-small-header text-center'; // Reset class
+            // Use classList to preserve base classes from HTML
+            tableHeading.classList.remove('bg-success', 'bg-danger');
 
             const db = await loadDatabaseFromFile('yellow_card.db');
 
@@ -301,30 +286,30 @@
                         // Policy is FOUND but is on the INVALID list
                         console.log(`Status: ${yellowCardNumber} is marked as INVALID.`);
                         tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Invalid`;
-                        tableHeading.className = 'custom-small-header text-center bg-danger'; // Set header to red
+                        // Use classList.add/remove to manage styles
+                        tableHeading.classList.remove('bg-success');
+                        tableHeading.classList.add('bg-danger'); // Add red, italic style defined in CSS
 
-                        // *** REQUIREMENT CHANGE: Do NOT populate table for invalid cards ***
-                        tableBody.innerHTML = '<tr><td colspan="2">Details not displayed for invalid card.</td></tr>'; // Clear body or show message
-                        tableBody.className = 'invalid-card-body'; // Optional: add class for specific styling
-
+                        // Do NOT populate table for invalid cards
+                        tableBody.innerHTML = '<tr><td colspan="2">Details not displayed for invalid card.</td></tr>';
+                        tableBody.className = 'invalid-card-body'; // Add class for specific styling
                         console.log("Table population skipped for invalid card.");
 
                     } else {
                         // Policy is FOUND and is NOT on the invalid list (VALID)
                         console.log(`Status: ${yellowCardNumber} is considered VALID.`);
                         tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Valid`;
-                        tableHeading.className = 'custom-small-header text-center bg-success'; // Set header to green
+                         // Use classList.add/remove to manage styles
+                        tableHeading.classList.remove('bg-danger');
+                        tableHeading.classList.add('bg-success'); // Add original green style via class
 
-                        // *** Populate table ONLY if valid ***
+                        // Populate table ONLY if valid
                         populateTable(policy);
                     }
 
                 } else {
                     // Policy was NOT FOUND in the database
-                    // loadPolicy would have already called displayError if an SQL error occurred,
-                    // but if it just returned null (not found), we display the specific 'not found' error.
-                    // We check if an error wasn't already displayed to avoid double messages.
-                    if (!tableBody.querySelector('.error-message')) {
+                    if (!tableBody.querySelector('.error-message')) { // Avoid double errors
                          displayError(`No policy data found in the database for Yellow Card number: ${yellowCardNumber}`);
                     }
                 }
@@ -333,7 +318,7 @@
                 // try { db.close(); console.log("Database closed."); } catch (e) { console.error("Error closing DB", e); }
 
             } else {
-                // Database loading failed. displayError was already called inside loadDatabaseFromFile.
+                // Database loading failed. displayError was already called.
                 console.log("Initialization stopped because database could not be loaded.");
             }
         }
