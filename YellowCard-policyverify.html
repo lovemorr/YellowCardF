@@ -2,342 +2,354 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
-  <title>e-YC | Yellow Card Verification</title>
+    <title>e-YC | Yellow Card Verification</title>
 
-  <!-- App CSS -->
-  <link href="css/app.bundle.css" rel="stylesheet">
+    <!-- App CSS -->
+    <link href="css/app.bundle.css" rel="stylesheet">
+
+    <!-- Custom Styles (including those needed if not in app.bundle.css) -->
+    <style>
+        /* Style for error messages */
+        .error-message {
+            color: #721c24; /* Dark red */
+            background-color: #f8d7da; /* Light red */
+            padding: 0.75rem 1.25rem;
+            border: 1px solid #f5c6cb; /* Lighter red border */
+            border-radius: 0.25rem;
+        }
+        /* Ensure table header span takes full width and has padding/border */
+        #tableHeading {
+             display: block; /* Make span behave like a block */
+             padding: 0.75rem 1.25rem;
+             border: 1px solid transparent;
+             border-radius: 0.25rem;
+             text-align: center; /* Center text */
+             margin-bottom: 1rem; /* Add some space below */
+        }
+        /* Success background (Green) */
+        .bg-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        /* Danger background (Red) */
+        .bg-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        /* Style first column of the table body */
+        #policyTableBody td:first-child {
+            width: 40%;
+            font-weight: bold; /* Make labels bold */
+        }
+    </style>
 </head>
 
 <body>
-  <!-- Navigation -->
-  <div style="border-bottom: #e2e2e2 1px solid;">
-    <nav class="navbar navbar-static-top" role="navigation"
-      style="margin-bottom: 0; padding-left: 50px; padding-right: 50px;">
-      <div class="navbar-header" style="padding-bottom:15px; padding-top:10px; margin: auto; width: 420px; float: none;">
-        <a class="navbar-brand" href="/"><span style="color : #48bbb4">e-</span><span style="color : #ff6444">YC</span>
-          Yellow Card Verification</a>
-      </div>
-    </nav>
-  </div>
-
-  <div class="row ng-scope">
-    <div style="width: 550px; margin: 0 auto; float: none;">
-      <div class="password-reset-div">
-        <h5 class="custom-page-header text-center"></h5>
-
-        <!-- Table to display policies -->
-        <table class="table" id="policyTable">
-          <thead>
-            <tr>
-              <th colspan="2">
-                <span class="bg-success custom-small-header text-center" id="tableHeading">
-                </span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Policy data will be inserted here by JavaScript -->
-          </tbody>
-        </table>
-
-      </div>
-      <div class="text-center" style="margin-top: 30px;">
-        © 2023 <a href="http://ycmis.comesa.int">COMESA Yellow Card</a> All rights reserved.
-      </div>
+    <!-- Navigation -->
+    <div style="border-bottom: #e2e2e2 1px solid;">
+        <nav class="navbar navbar-static-top" role="navigation"
+            style="margin-bottom: 0; padding-left: 50px; padding-right: 50px;">
+            <div class="navbar-header"
+                style="padding-bottom:15px; padding-top:10px; margin: auto; width: 420px; float: none;">
+                <a class="navbar-brand" href="/"><span style="color : #48bbb4">e-</span><span
+                        style="color : #ff6444">YC</span>
+                    Yellow Card Verification</a>
+            </div>
+        </nav>
     </div>
-  </div>
 
-  <script src="sql-asm.js"></script>
-  <script>
-    let db; // Declare db in the global scope
+    <div class="row ng-scope">
+        <div style="width: 550px; margin: 0 auto; float: none;">
+            <div class="password-reset-div">
+                <h5 class="custom-page-header text-center"></h5>
 
-    // Function to extract a query parameter from the URL
-    function getQueryParameter(name) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    }
+                <!-- Table to display policies -->
+                <table class="table" id="policyTable">
+                    <thead>
+                        <tr>
+                            <!-- Header span now correctly styled via CSS -->
+                            <th colspan="2">
+                                <span class="custom-small-header text-center" id="tableHeading">
+                                    Loading...
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="policyTableBody">
+                        <!-- Policy data will be inserted here by JavaScript -->
+                        <tr><td colspan="2">Initializing... Please wait.</td></tr>
+                    </tbody>
+                </table>
 
-    // Function to load the database from a file
-    async function loadDatabaseFromFile(dbFileName) {
-      try {
-        const response = await fetch(dbFileName);
+            </div>
+            <div class="text-center" style="margin-top: 30px;">
+                © 2023 <a href="http://ycmis.comesa.int">COMESA Yellow Card</a> All rights reserved.
+            </div>
+        </div>
+    </div>
 
-        if (!response.ok) {
-          throw new Error(`Failed to load database file: ${response.status} ${response.statusText}`);
+    <!-- Make sure sql-asm.js is served correctly -->
+    <!-- It often requires a companion .wasm file (e.g., sql-wasm.wasm) in the same dir -->
+    <script src="sql-asm.js"></script>
+
+    <script>
+        // Get references to UI elements
+        const tableHeading = document.getElementById('tableHeading');
+        const tableBody = document.getElementById('policyTableBody');
+
+        // List of Yellow Card numbers to be treated as invalid
+        const INVALID_YELLOW_CARD_NUMBERS = [
+            "ZW97423785", "ZW6721326", "ZW6273665", "ZW2314370", "ZW9011230",
+            "ZW2400757", "ZW0865715", "ZW4534350", "ZW5876557", "ZW8696545",
+            "ZW3525671", "ZW7089436", "ZW3785551", "ZW1296530", "ZW7857478",
+            "ZW9485064", "ZW6365478", "ZW0077859", "ZW9742132", "ZW0004534",
+            "ZW050086", "ZW2153967", "ZW5007421", "ZW5467390", "ZW7699307",
+            "ZW1007575", "ZW8575409", "ZW3415774", "ZW8112425", "ZW5286633",
+            "ZW3224324", "ZW3003534", "ZW9794536", "ZW242156", "ZW2425780",
+            "ZW0007765", "ZW5637778", "ZW768554", "ZW48291573", "ZW10374829",
+            "ZW29583714", "ZW50827149", "ZW94732851", "ZW61394872", "ZW78512493",
+            "ZW89427315", "ZW21547893", "ZW93741285", "ZW34295178", "ZW52978431",
+            "ZW41785392", "ZW85947132", "ZW17845392", "ZW56294381", "ZW98147325",
+            "ZW74582139", "ZW23947851", "ZW18479352", "ZW57824139", "ZW73249581",
+            "ZW24985137", "ZW89475321", "ZW31495782", "ZW67582391", "ZW84175238",
+            "ZW96248731", "ZW52179438", "ZW38714259", "ZW71459283", "ZW24857319",
+            "ZW53872194", "ZW91582734", "ZW87521943", "ZW12784593", "ZW64279531",
+            "ZW35197284", "ZW98471352", "ZW27349581", "ZW81374259", "ZW54821793",
+            "ZW39285741", "ZW45798132", "ZW61594732", "ZW72951384", "ZW93817425",
+            "ZW13475829", "ZW84729135", "ZW21348795", "ZW57938241", "ZW84175239",
+            "ZW67295148", "ZW95328714", "ZW41857239", "ZW23951478", "ZW84253719",
+            "ZW18543927", "ZW39785214", "ZW52481739", "ZW67824951", "ZW29475813",
+            "ZW81534729", "ZW74385291", "ZW19284753", "ZW53749281", "ZW82194735",
+            "ZW96347182", "ZW25987143", "ZW74129835", "ZW34982715", "ZW87425193",
+            "ZW62793158", "ZW51837942", "ZW79248531", "ZW23948715", "ZW56428713",
+            "ZW82649731", "ZW37184925", "ZW94781532", "ZW58213749", "ZW61527398",
+            "ZW73951482", "ZW29847135", "ZW47932851", "ZW31578249", "ZW84271936",
+            "ZW19638247", "ZW75829413", "ZW23795148", "ZW64152879", "ZW82374195",
+            "ZW52719348", "ZW96827435", "ZW31475829", "ZW49273815", "ZW85721934",
+            "ZW17538294", "ZW92647183", "ZW38194275", "ZW67358942", "ZW28473591",
+            "ZW81935724", "ZW57218493", "ZW63829175", "ZW42789156", "ZW15937284",
+            "ZW68231745", "ZW76182395", "ZW93725184", "ZW34589172"
+        ];
+
+
+        // --- Helper Functions ---
+
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
         }
 
-        const buffer = await response.arrayBuffer();
-        const uint8Array = new Uint8Array(buffer);
+        function displayError(message) {
+            console.error("Displaying Error:", message); // Log for developers
+            tableHeading.textContent = 'Error Occurred';
+            tableHeading.classList.remove('bg-success', 'bg-danger'); // Remove status colors
+            // Display error in the table body using the error message style
+            tableBody.innerHTML = `<tr><td colspan="2" class="error-message">${message}</td></tr>`;
+        }
 
-        // Initialize sql.js and load the database
-        const SQL = await initSqlJs({
-          locateFile: file => file
+        function formatDate(date) {
+            if (!(date instanceof Date) || isNaN(date)) {
+                return 'Invalid Date'; // Handle potential invalid date objects
+            }
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+        }
+
+        // --- Database Functions ---
+
+        async function loadDatabaseFromFile(dbFileName) {
+            try {
+                // Initialize sql.js. Assumes sql-asm.js loaded initSqlJs globally.
+                // locateFile assumes the .wasm file is in the same directory as sql-asm.js
+                const SQL = await initSqlJs({ locateFile: file => `./${file}` }); // Use relative path explicitly
+
+                console.log("Fetching database file:", dbFileName);
+                const response = await fetch(dbFileName);
+
+                if (!response.ok) {
+                    throw new Error(`Failed to load database file '${dbFileName}': ${response.status} ${response.statusText}. Check if the file exists and the path is correct.`);
+                }
+
+                const buffer = await response.arrayBuffer();
+                console.log("Database file fetched, size:", buffer.byteLength);
+                const uint8Array = new Uint8Array(buffer);
+
+                console.log("Initializing SQL.js database from buffer...");
+                const db = new SQL.Database(uint8Array);
+                console.log("SQL.js Database initialized successfully.");
+                return db;
+
+            } catch (error) {
+                displayError(`Error loading database: ${error.message}`);
+                console.error("Detailed error during database load:", error);
+                return null;
+            }
+        }
+
+        function loadPolicy(db, yellowCardNumber) {
+            let policy = null;
+            let stmt = null; // Declare stmt outside try
+            try {
+                 // Use named parameter for clarity
+                stmt = db.prepare("SELECT * FROM yellow_card_policies WHERE yellow_card_number = :ycn");
+                stmt.bind({ ':ycn': yellowCardNumber });
+                console.log(`Executing query for yellow_card_number: ${yellowCardNumber}`);
+
+                if (stmt.step()) { // step() returns true if a row was found
+                    policy = stmt.getAsObject();
+                    console.log("Policy found in database:", policy);
+                } else {
+                    console.log("No policy found in database for:", yellowCardNumber);
+                }
+            } catch (error) {
+                // Display specific SQL errors if helpful
+                displayError(`Error querying policy data: ${error.message}`);
+                console.error("SQL Query Error:", error);
+            } finally {
+                if (stmt) {
+                    stmt.free(); // Essential: Always free the statement memory
+                    console.log("SQL statement freed.");
+                }
+            }
+            return policy; // Returns the policy object or null
+        }
+
+
+        // --- Table Population Function ---
+
+        function populateTable(policy) {
+            tableBody.innerHTML = ''; // Clear "Initializing..." or previous content
+
+            // Define the fields to display: [Label shown on page, key_in_policy_object]
+            const fields = [
+                ["Verification Timestamp", "verification_timestamp"], // Special case handled below
+                ["PIC Name", "pic_name"],
+                ["Yellow Card Number", "yellow_card_number"],
+                ["Policy Number", "policy_number"],
+                ["Issued On", "issued_on"],
+                ["Issued Timestamp", "issued_timestamp"],
+                ["Valid From", "valid_from"],
+                ["Valid Upto", "valid_upto"],
+                ["Customer Name", "customer_name"],
+                ["Vehicle Make", "vehicle_make"],
+                ["Vehicle Reg Number", "vehicle_reg_number"],
+                ["Countries Covered", "countries_covered"],
+                ["Vehicle Engine Number", "vehicle_engine_number"],
+                ["Vehicle Chassis Number", "vehicle_chassis_number"],
+                ["Vehicle Color", "vehicle_color"],
+                ["No. of Seats", "no_of_seats"],
+                ["Issuing NB Contact", "issuing_nb_contact"],
+                ["Secretariat Contact", "secretariat_contact"]
+            ];
+
+            // Get the current date and time for verification timestamp
+            const verificationTime = formatDate(new Date());
+
+            fields.forEach(([label, key]) => {
+                const row = tableBody.insertRow();
+                const cell1 = row.insertCell();
+                // cell1 styling applied via CSS (#policyTableBody td:first-child)
+                cell1.textContent = label;
+
+                const cell2 = row.insertCell();
+                if (key === "verification_timestamp") {
+                    cell2.textContent = verificationTime;
+                } else {
+                    // Use nullish coalescing (??) to show empty string if DB value is null/undefined
+                    cell2.textContent = policy[key] ?? '';
+                }
+            });
+             console.log("Table populated with policy data.");
+        }
+
+
+        // --- Main Initialization Logic ---
+
+        async function initializeAndLoad() {
+            console.log("Starting initializeAndLoad function...");
+            tableBody.innerHTML = '<tr><td colspan="2">Loading policy details... Please wait.</td></tr>'; // Update loading message
+
+            const yellowCardNumber = getQueryParameter('yellow_card_number');
+
+            if (!yellowCardNumber) {
+                displayError("No Yellow Card number provided in the URL. Please add '?yellow_card_number=YOUR_NUMBER' to the web address.");
+                return; // Stop execution if no number provided
+            }
+
+            // Dynamically set the initial table heading while checking
+            tableHeading.textContent = `Checking Yellow Card: ${yellowCardNumber}...`;
+            tableHeading.classList.remove('bg-danger', 'bg-success'); // Reset status classes
+
+            // Load the database (ensure 'yellow_card.db' is accessible from this HTML's location)
+            const db = await loadDatabaseFromFile('yellow_card.db');
+
+            if (db) {
+                console.log("Database handle obtained. Loading policy details...");
+                const policy = loadPolicy(db, yellowCardNumber); // Attempt to load the policy
+
+                if (policy) {
+                    // Policy was found in the database, now check against the invalid list
+                    console.log(`Checking validity status for: ${yellowCardNumber}`);
+                    const isInvalid = INVALID_YELLOW_CARD_NUMBERS.includes(yellowCardNumber);
+
+                    if (isInvalid) {
+                        // Number is on the blacklist
+                        console.log(`Status: ${yellowCardNumber} is marked as INVALID.`);
+                        tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Invalid`;
+                        tableHeading.classList.remove('bg-success'); // Remove green if present
+                        tableHeading.classList.add('bg-danger');    // Add red
+                    } else {
+                        // Number is NOT on the blacklist (considered valid)
+                        console.log(`Status: ${yellowCardNumber} is considered VALID.`);
+                        tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Valid`;
+                        tableHeading.classList.remove('bg-danger');  // Remove red if present
+                        tableHeading.classList.add('bg-success');  // Add green
+                    }
+
+                    // Populate the table with the details found in the DB, regardless of valid/invalid status
+                    populateTable(policy);
+
+                } else {
+                    // Policy number was NOT found in the database after successful DB load
+                     displayError(`No policy data found in the database for Yellow Card number: ${yellowCardNumber}`);
+                }
+
+                // Optional: Close the database connection if it's definitely not needed anymore on this page
+                // try {
+                //     db.close();
+                //     console.log("Database closed.");
+                // } catch (closeError) {
+                //     console.error("Error closing database:", closeError);
+                // }
+
+            } else {
+                // Database loading failed, error message already displayed by loadDatabaseFromFile
+                console.log("Initialization stopped because database could not be loaded.");
+                // No need to call displayError again here, it was called inside loadDatabaseFromFile
+            }
+        }
+
+        // --- Start the application ---
+        // Add event listener to run the script after the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', (event) => {
+             initializeAndLoad();
         });
 
-        db = new SQL.Database(uint8Array); // Assign the loaded database to the global variable
-        console.log("Is the database valid? : " + db); // <-- Add this line
-        return db;
 
-      } catch (error) {
-        console.error("Error loading database:", error);
-        alert("Failed to load database. See console for details.");
-        return null;
-      }
-    }
-
-    // Function to format the date
-    function formatDate(date) {
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-      const year = date.getFullYear();
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      const seconds = String(date.getSeconds()).padStart(2, '0');
-
-      return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-    }
-
-    // Load the database and then populate the table
-    async function initializeAndLoad() {
-      console.log("Starting initializeAndLoad()");
-      const yellowCardNumber = getQueryParameter('yellow_card_number'); // Get the yellow_card_number
-
-      if (!yellowCardNumber) {
-        console.log("No yellow_card_number provided in the URL.");
-        document.getElementById('policyTable').innerHTML =
-          "<tr><td>No policy selected. Please provide a yellow_card_number in the URL.</td></tr>"; //Display an error message.
-        return;
-      }
-
-      //Set the dynamic table heading
-      document.getElementById('tableHeading').textContent = `Yellow Card: ${yellowCardNumber} is Valid`;
-
-
-      db = await loadDatabaseFromFile('yellow_card.db'); // Replace with the correct path if needed
-
-      if (db) { //Only proceed if db loaded successfully.
-        console.log("Database loaded successfully:", db);
-
-        // Call loadData after database is loaded
-        const policy = await loadData(db, yellowCardNumber);
-
-        if (policy) {
-          populateTable([policy]);
-        } else {
-          // Handle the case where no policy was found for that number
-          const tableBody = document.querySelector('#policyTable tbody');
-          tableBody.innerHTML =
-            "<tr><td colspan='2'>No policy found with yellow_card_number: " + yellowCardNumber +
-            "</td></tr>";
-        }
-
-
-      } else {
-        console.log("Database failed to load.  Exiting.");
-      }
-    }
-
-    // Loads table after being loaded from file
-    async function loadData(db, yellowCardNumber) {
-
-      function loadPolicy(db, yellowCardNumber) { //Pass in db
-        const stmt = db.prepare("SELECT * FROM yellow_card_policies WHERE yellow_card_number = ?");
-        stmt.bind([yellowCardNumber]);
-
-        let policy = null;
-
-        try {
-          if (stmt.step()) {
-            policy = stmt.getAsObject();
-          }
-        } catch (error) {
-          console.error("Error loading policy:", error);
-          // Optionally, display an error message to the user
-        } finally {
-          stmt.free(); // Always free the statement, even if there's an error
-        }
-
-        return policy;
-      }
-      const policy = loadPolicy(db, yellowCardNumber);
-      return policy
-    }
-
-    function populateTable(policies) {
-      const tableBody = document.querySelector('#policyTable tbody');
-      tableBody.innerHTML = ''; // Clear existing content
-
-      if (!policies || policies.length === 0) {
-        tableBody.innerHTML = "<tr><td colspan='2'>No policies to display.</td></tr>"; // Use colspan to fill both cells
-        return;
-      }
-
-      policies.forEach(policy => {
-        //Re-declare constants, for ease of management.
-        const verificationTimestamp = "Verification Timestamp";
-        const picName = "PIC Name";
-        const yellowCardNumberr = "Yellow Card Number";
-        const policyNumber = "Policy Number";
-        const issuedOn = "Issued On";
-        const issuedTimestamp = "Issued Timestamp";
-        const validFrom = "Valid From";
-        const validUpto = "Valid Upto";
-        const customerName = "Customer Name";
-        const vehicleMake = "Vehicle Make";
-        const vehicleRegNumber = "Vehicle Reg Number";
-        const countriesCovered = "Countries Covered";
-        const vehicleEngineNumber = "Vehicle Engine Number";
-        const vehicleChassisNumber = "Vehicle Chassis Number";
-        const vehicleColor = "Vehicle Color";
-        const noOfSeats = "No. of Seats";
-        const issuingNBContact = "Issuing NB Contact";
-        const secretariatContact = "Secretariat Contact";
-
-        // Get the current date and time
-        const now = new Date();
-        const formattedDateTime = formatDate(now);
-
-        let newRow = tableBody.insertRow();
-        let cell1 = newRow.insertCell();
-        cell1.width = "40%"; // Setting width for first cell as per Code 1
-        cell1.textContent = verificationTimestamp;
-        let cell2 = newRow.insertCell();
-        // Use the formatted date and time
-        cell2.textContent = formattedDateTime;
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = picName;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.pic_name ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = yellowCardNumberr;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.yellow_card_number ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = policyNumber;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.policy_number ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = issuedOn;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.issued_on ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = issuedTimestamp;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.issued_timestamp ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = validFrom;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.valid_from ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = validUpto;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.valid_upto ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = customerName;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.customer_name ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = vehicleMake;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.vehicle_make ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = vehicleRegNumber;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.vehicle_reg_number ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = countriesCovered;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.countries_covered ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = vehicleEngineNumber;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.vehicle_engine_number ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = vehicleChassisNumber;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.vehicle_chassis_number ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = vehicleColor;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.vehicle_color ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = noOfSeats;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.no_of_seats ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = issuingNBContact;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.issuing_nb_contact ?? '';
-
-        newRow = tableBody.insertRow();
-        cell1 = newRow.insertCell();
-        cell1.width = "40%";
-        cell1.textContent = secretariatContact;
-        cell2 = newRow.insertCell();
-        cell2.textContent = policy.secretariat_contact ?? '';
-
-      });
-    }
-
-
-    // Call the initialization function
-    initializeAndLoad();
-  </script>
+    </script>
 </body>
-
 </html>
