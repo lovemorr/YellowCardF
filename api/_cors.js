@@ -1,7 +1,9 @@
 // CORS helper for all API routes
 const ALLOWED_ORIGINS = [
   'https://yc.comesa.cc',
+  'https://lucaselmo-bjyjgzkov-lovemorrs-projects.vercel.app',
   'http://localhost:3000',
+  'http://localhost:3001',
   'http://localhost:5500',
   'http://127.0.0.1:5500'
 ];

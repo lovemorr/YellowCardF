@@ -17,3 +17,4 @@ dist
 *.db
 *.db.sqbpro
 yellow_card.db
+.env*.local
