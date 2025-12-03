@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yellow Card Number Generator</title>
     <style>
-        /* --- Minimalist CSS --- */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f4f4f9;
             color: #333;
             display: flex;
@@ -16,7 +15,6 @@
             height: 100vh;
             margin: 0;
         }
-
         .container {
             background: #fff;
             padding: 2rem 2.5rem;
@@ -26,12 +24,7 @@
             width: 90%;
             max-width: 450px;
         }
-
-        h2 {
-            margin-top: 0;
-            color: #48bbb4;
-        }
-
+        h2 { margin-top: 0; color: #48bbb4; }
         #outputBox {
             width: 100%;
             padding: 0.75rem;
@@ -43,15 +36,9 @@
             background-color: #e9ecef;
             color: #495057;
             margin: 1rem 0;
-            box-sizing: border-box; /* Ensures padding is included in the width */
+            box-sizing: border-box;
         }
-
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
+        .button-group { display: flex; gap: 1rem; margin-top: 1.5rem; }
         button {
             flex-grow: 1;
             padding: 0.75rem 1rem;
@@ -63,148 +50,66 @@
             transition: background-color 0.2s, transform 0.1s;
             color: white;
         }
-
-        button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        #generateZmBtn {
-            background-color: #4caf50; /* Green for Zambia */
-        }
-
-        #generateZwBtn {
-            background-color: #ffc107; /* Yellow for Zimbabwe */
-            color: #333;
-        }
-
-        button:not(:disabled):hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-
-        #status {
-            margin-top: 1.5rem;
-            color: #6c757d;
-            font-style: italic;
-            height: 20px; /* Reserve space to prevent layout shift */
-        }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        #generateZmBtn { background-color: #4caf50; }
+        #generateZwBtn { background-color: #ffc107; color: #333; }
+        button:not(:disabled):hover { opacity: 0.9; transform: translateY(-2px); }
+        #status { margin-top: 1.5rem; color: #6c757d; font-style: italic; height: 20px; }
     </style>
 </head>
 <body>
-
     <div class="container">
         <h2>Unique Yellow Card Number Generator</h2>
         <input type="text" id="outputBox" readonly placeholder="Generated number will appear here">
         <div class="button-group">
-            <button id="generateZmBtn" disabled>Generate Zambian (ZM)</button>
-            <button id="generateZwBtn" disabled>Generate Zimbabwean (ZW)</button>
+            <button id="generateZmBtn">Generate Zambian (ZM)</button>
+            <button id="generateZwBtn">Generate Zimbabwean (ZW)</button>
         </div>
-        <p id="status">Loading database...</p>
+        <p id="status">Ready to generate</p>
     </div>
 
-    <!-- This script tag for sql.js is required. It must be in the same folder. -->
-    <script src="sql-asm.js"></script>
-
+    <script src="js/config.js"></script>
     <script>
-        // --- UI Element References ---
         const outputBox = document.getElementById('outputBox');
         const generateZmBtn = document.getElementById('generateZmBtn');
         const generateZwBtn = document.getElementById('generateZwBtn');
         const statusText = document.getElementById('status');
-        
-        // This will hold the loaded database object
-        let db = null;
 
-        // --- Core Functions ---
-
-        /**
-         * Loads the SQLite database from a file.
-         * This function is adapted from your provided code.
-         */
-        async function loadDatabase() {
+        async function checkNumberExists(ycNumber) {
             try {
-                // Initialize sql.js
-                const SQL = await initSqlJs({ 
-                    locateFile: file => `./${file}` 
-                });
-                
-                // Fetch the database file
-                const response = await fetch('yellow_card.db');
-                if (!response.ok) {
-                    throw new Error(`Failed to load database file: ${response.statusText}`);
-                }
-                const buffer = await response.arrayBuffer();
-                
-                // Load the database from the buffer
-                return new SQL.Database(new Uint8Array(buffer));
+                const res = await fetch(`${API_CONFIG.endpoints.check}?yellow_card_number=${ycNumber}`);
+                const data = await res.json();
+                return data.exists;
             } catch (error) {
-                console.error("Database Loading Error:", error);
-                statusText.textContent = `Error: ${error.message}`;
-                statusText.style.color = 'red';
-                return null;
+                console.error('API Error:', error);
+                return true; // Assume exists on error to be safe
             }
         }
 
-        /**
-         * Checks if a given Yellow Card number exists in the database.
-         * @param {object} dbInstance - The loaded database instance.
-         * @param {string} ycNumber - The Yellow Card number to check.
-         * @returns {boolean} - True if the number exists, false otherwise.
-         */
-        function numberExists(dbInstance, ycNumber) {
-            let stmt = null;
-            try {
-                // Prepare a statement to be more efficient. We only need to know if it exists (SELECT 1).
-                stmt = dbInstance.prepare("SELECT 1 FROM yellow_card_policies WHERE yellow_card_number = :ycn LIMIT 1");
-                stmt.bind({ ':ycn': ycNumber });
-                
-                // stmt.step() returns true if a row was found, false otherwise.
-                const exists = stmt.step(); 
-                return exists;
-            } catch (error) {
-                console.error("Error checking number existence:", error);
-                statusText.textContent = 'Error during database check.';
-                return true; // Assume it exists on error to be safe
-            } finally {
-                if (stmt) stmt.free(); // Always free the statement to prevent memory leaks
-            }
-        }
-
-        /**
-         * Generates a unique Yellow Card number with a given prefix.
-         * @param {string} prefix - The country code prefix ('ZM' or 'ZW').
-         */
         async function generateUniqueNumber(prefix) {
-            if (!db) {
-                statusText.textContent = 'Database not ready. Please wait.';
-                return;
-            }
-
-            // Disable buttons during generation to prevent multiple clicks
             generateZmBtn.disabled = true;
             generateZwBtn.disabled = true;
             statusText.textContent = `Searching for a unique ${prefix} number...`;
             outputBox.value = 'Generating...';
 
-            // Use requestAnimationFrame to allow the UI to update before the loop starts
-            await new Promise(resolve => requestAnimationFrame(resolve));
-
             let candidateNumber;
             let isUnique = false;
             let attempts = 0;
-            const MAX_ATTEMPTS = 100; // A safeguard against an infinite loop
+            const MAX_ATTEMPTS = 100;
 
             while (!isUnique && attempts < MAX_ATTEMPTS) {
-                // Generate an 8-digit random number
                 const randomNumber = Math.floor(Math.random() * 90000000) + 10000000;
                 candidateNumber = prefix + randomNumber;
                 
-                isUnique = !numberExists(db, candidateNumber);
+                const exists = await checkNumberExists(candidateNumber);
+                isUnique = !exists;
                 attempts++;
+                
+                if (!isUnique) {
+                    statusText.textContent = `Attempt ${attempts}: ${candidateNumber} exists, trying again...`;
+                }
             }
 
-            // --- Update UI with the result ---
             if (isUnique) {
                 outputBox.value = candidateNumber;
                 statusText.textContent = `Found unique number in ${attempts} attempt(s).`;
@@ -214,36 +119,12 @@
                 statusText.style.color = 'red';
             }
 
-            // Re-enable buttons
             generateZmBtn.disabled = false;
             generateZwBtn.disabled = false;
         }
 
-        // --- Initialization ---
-        
-        /**
-         * Main function to initialize the application on page load.
-         */
-        async function initializeApp() {
-            db = await loadDatabase();
-            
-            if (db) {
-                statusText.textContent = 'Database loaded. Ready to generate.';
-                generateZmBtn.disabled = false;
-                generateZwBtn.disabled = false;
-                
-                // Add event listeners after the database is confirmed to be loaded
-                generateZmBtn.addEventListener('click', () => generateUniqueNumber('ZM'));
-                generateZwBtn.addEventListener('click', () => generateUniqueNumber('ZW'));
-            } else {
-                statusText.textContent = 'Failed to load database. Please check console for errors.';
-                statusText.style.color = 'red';
-            }
-        }
-
-        // Start the application once the DOM is fully loaded
-        document.addEventListener('DOMContentLoaded', initializeApp);
-
+        generateZmBtn.addEventListener('click', () => generateUniqueNumber('ZM'));
+        generateZwBtn.addEventListener('click', () => generateUniqueNumber('ZW'));
     </script>
 </body>
 </html>

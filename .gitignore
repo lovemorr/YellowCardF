@@ -4,3 +4,16 @@
 node_modules
 dist
 .cache
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Vercel
+.vercel
+
+# SQLite database (no longer used - migrated to Neon PostgreSQL)
+*.db
+*.db.sqbpro
+yellow_card.db

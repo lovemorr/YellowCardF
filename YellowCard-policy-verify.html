@@ -11,20 +11,9 @@
 
     <title>e-YC | Yellow Card Verification</title>
 
-    <!-- App CSS (Assuming this defines .bg-success, .custom-small-header etc.) -->
     <link href="css/app.bundle.css" rel="stylesheet">
 
-    <!-- === Add this section if 'Porient One' is a Google Font === -->
-    <!--
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Porient+One&display=swap" rel="stylesheet">
-    -->
-    <!-- === Or load the font using @font-face if hosted locally === -->
-
-    <!-- Custom Styles -->
     <style>
-        /* Style for error messages shown in the table body */
         .error-message {
             color: #721c24;
             background-color: #f8d7da;
@@ -32,39 +21,21 @@
             border: 1px solid #f5c6cb;
             border-radius: 0.25rem;
         }
-
-        /* Style for the header span (#tableHeading) */
         #tableHeading {
              display: block;
              margin-bottom: 1rem;
-             /* Base styles like padding/border should come from .custom-small-header */
-             /* text-align: center; applied via class */
         }
-
-        /* --- Style Adjustments --- */
-
-        /* We rely entirely on app.bundle.css for the green 'Valid' style via .bg-success */
-
-        /* Red 'Invalid' style - Precise user request */
         .bg-danger {
-            background-color: #F2DEDE;          /* Specific light red background */
-            color: #808080;                  /* Specific gray text color */
-            font-family: 'Porient One', sans-serif; /* Specific font family (ensure loaded!) + fallback */
-            font-size: 22px;                   /* Specific font size */
-            font-style: italic;                /* Keep italic style */
-            /* Remove specific border-color unless needed */
-            /* Padding, border-radius etc. should come from base classes */
+            background-color: #F2DEDE;
+            color: #808080;
+            font-family: 'Porient One', sans-serif;
+            font-size: 22px;
+            font-style: italic;
         }
-        /* --- End Style Adjustments --- */
-
-
-        /* Style first column of the table body */
         #policyTableBody td:first-child {
             width: 40%;
             font-weight: bold;
         }
-
-         /* Optional: Style for empty table body when invalid */
         #policyTableBody.invalid-card-body td {
              padding: 0.75rem 1.25rem;
              font-style: italic;
@@ -75,7 +46,6 @@
 </head>
 
 <body>
-    <!-- Navigation -->
     <div style="border-bottom: #e2e2e2 1px solid;">
         <nav class="navbar navbar-static-top" role="navigation"
             style="margin-bottom: 0; padding-left: 50px; padding-right: 50px;">
@@ -93,7 +63,6 @@
             <div class="password-reset-div">
                 <h5 class="custom-page-header text-center"></h5>
 
-                <!-- Table to display policies -->
                 <table class="table" id="policyTable">
                     <thead>
                         <tr>
@@ -116,64 +85,21 @@
         </div>
     </div>
 
-    <!-- sql.js -->
-    <script src="sql-asm.js"></script>
-
+    <script src="js/config.js"></script>
     <script>
-        // Get references to UI elements
         const tableHeading = document.getElementById('tableHeading');
         const tableBody = document.getElementById('policyTableBody');
 
-        // List of Yellow Card numbers to be treated as invalid
-        const INVALID_YELLOW_CARD_NUMBERS = [
-            "ZW97423785", "ZW6721326", "ZW6273665", "ZW2314370", "ZW9011230",
-            "ZW2400757", "ZW0865715", "ZW4534350", "ZW5876557", "ZW8696545",
-            "ZW3525671", "ZW7089436", "ZW3785551", "ZW1296530", "ZW7857478",
-            "ZW9485064", "ZW6365478", "ZW0077859", "ZW9742132", "ZW0004534",
-            "ZW050086", "ZW2153967", "ZW5007421", "ZW5467390", "ZW7699307",
-            "ZW1007575", "ZW8575409", "ZW3415774", "ZW8112425", "ZW5286633",
-            "ZW3224324", "ZW3003534", "ZW9794536", "ZW242156", "ZW2425780",
-            "ZW0007765", "ZW5637778", "ZW768554", "ZW48291573", "ZW10374829",
-            "ZW29583714", "ZW50827149", "ZW94732851",
-            "ZW21547893", "ZW93741285", "ZW52978431",
-            "ZW17845392", "ZW56294381", "ZW98147325",
-            "ZW74582139", "ZW23947851", "ZW18479352", "ZW57824139", "ZW73249581",
-            "ZW24985137", "ZW89475321", "ZW31495782", "ZW67582391", "ZW84175238",
-            "ZW96248731", "ZW52179438", "ZW38714259", "ZW71459283", "ZW24857319",
-            "ZW53872194", "ZW91582734", "ZW87521943", "ZW12784593", "ZW64279531",
-            "ZW35197284", "ZW27349581", "ZW81374259", "ZW54821793",
-            "ZW39285741", "ZW45798132", "ZW61594732", "ZW72951384", "ZW93817425",
-            "ZW13475829", "ZW84729135", "ZW57938241",
-            "ZW67295148", "ZW23951478",
-            "ZW52481739", "ZW67824951", "ZW29475813",
-            "ZW81534729", "ZW74385291", "ZW19284753", "ZW53749281", "ZW82194735",
-            "ZW96347182", "ZW25987143", "ZW74129835", "ZW34982715", "ZW87425193",
-            "ZW62793158", "ZW51837942", "ZW79248531", "ZW23948715", "ZW56428713",
-            "ZW82649731", "ZW37184925", "ZW94781532", "ZW58213749", "ZW61527398",
-            "ZW73951482", "ZW29847135", "ZW47932851", "ZW31578249", "ZW84271936",
-            "ZW19638247", "ZW75829413", "ZW23795148", "ZW64152879", "ZW82374195",
-            "ZW52719348", "ZW96827435", "ZW31475829", "ZW49273815", "ZW85721934",
-            "ZW17538294", "ZW92647183", "ZW38194275", "ZW67358942", "ZW28473591",
-            "ZW81935724", "ZW57218493", "ZW63829175", "ZW42789156", "ZW15937284",
-            "ZW68231745", "ZW76182395", "ZW93725184", "ZW34589172"
-        ];
-
-        // --- Helper Functions ---
-        function getQueryParameter(name) { /* ... */ }
-        function displayError(message) { /* ... */ }
-        function formatDate(date) { /* ... */ }
-        // ... (rest of helper functions are unchanged) ...
         function getQueryParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
         }
 
         function displayError(message) {
-            console.error("Displaying Error:", message);
             tableHeading.textContent = 'Error Occurred';
             tableHeading.classList.remove('bg-success', 'bg-danger');
             tableBody.innerHTML = `<tr><td colspan="2" class="error-message">${message}</td></tr>`;
-            tableBody.className = ''; // Reset table body class
+            tableBody.className = '';
         }
 
         function formatDate(date) {
@@ -187,59 +113,9 @@
             return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
         }
 
-        // --- Database Functions ---
-        async function loadDatabaseFromFile(dbFileName) { /* ... */ }
-        function loadPolicy(db, yellowCardNumber) { /* ... */ }
-        // ... (rest of database functions are unchanged) ...
-         async function loadDatabaseFromFile(dbFileName) {
-            try {
-                const SQL = await initSqlJs({ locateFile: file => `./${file}` });
-                console.log("Fetching database file:", dbFileName);
-                const response = await fetch(dbFileName);
-                if (!response.ok) { throw new Error(`Failed to load database file '${dbFileName}': ${response.status} ${response.statusText}.`); }
-                const buffer = await response.arrayBuffer();
-                console.log("Database file fetched, size:", buffer.byteLength);
-                const uint8Array = new Uint8Array(buffer);
-                console.log("Initializing SQL.js database from buffer...");
-                const db = new SQL.Database(uint8Array);
-                console.log("SQL.js Database initialized successfully.");
-                return db;
-            } catch (error) {
-                displayError(`Error loading database: ${error.message}`);
-                console.error("Detailed error during database load:", error);
-                return null;
-            }
-        }
-
-        function loadPolicy(db, yellowCardNumber) {
-            let policy = null;
-            let stmt = null;
-            try {
-                stmt = db.prepare("SELECT * FROM yellow_card_policies WHERE yellow_card_number = :ycn");
-                stmt.bind({ ':ycn': yellowCardNumber });
-                console.log(`Executing query for yellow_card_number: ${yellowCardNumber}`);
-                if (stmt.step()) {
-                    policy = stmt.getAsObject();
-                    console.log("Policy found in database:", policy);
-                } else {
-                    console.log("No policy found in database for:", yellowCardNumber);
-                }
-            } catch (error) {
-                displayError(`Error querying policy data: ${error.message}`);
-                console.error("SQL Query Error:", error);
-            } finally {
-                if (stmt) { stmt.free(); console.log("SQL statement freed."); }
-            }
-            return policy;
-        }
-
-
-        // --- Table Population Function ---
-        function populateTable(policy) { /* ... */ }
-        // ... (table population function is unchanged) ...
-         function populateTable(policy) {
+        function populateTable(policy) {
             tableBody.innerHTML = '';
-            tableBody.className = ''; // Reset any special class
+            tableBody.className = '';
 
             const fields = [
                 ["Verification Timestamp", "verification_timestamp"], ["PIC Name", "pic_name"],
@@ -260,13 +136,9 @@
                 const cell2 = row.insertCell();
                 cell2.textContent = (key === "verification_timestamp") ? verificationTime : (policy[key] ?? '');
             });
-            console.log("Table populated with policy data.");
         }
 
-        // --- Main Initialization Logic ---
-        // (This function remains the same as the previous version, it just adds/removes classes)
         async function initializeAndLoad() {
-            console.log("Starting initializeAndLoad function...");
             tableBody.innerHTML = '<tr><td colspan="2">Loading policy details... Please wait.</td></tr>';
             tableBody.className = '';
 
@@ -278,55 +150,36 @@
             }
 
             tableHeading.textContent = `Checking Yellow Card: ${yellowCardNumber}...`;
-            tableHeading.classList.remove('bg-success', 'bg-danger'); // Use classList
+            tableHeading.classList.remove('bg-success', 'bg-danger');
 
-            const db = await loadDatabaseFromFile('yellow_card.db');
+            try {
+                const res = await fetch(`${API_CONFIG.endpoints.verify}?yellow_card_number=${yellowCardNumber}`);
+                const data = await res.json();
 
-            if (db) {
-                console.log("Database handle obtained. Loading policy details...");
-                const policy = loadPolicy(db, yellowCardNumber);
-
-                if (policy) {
-                    console.log(`Checking validity status for: ${yellowCardNumber}`);
-                    const isInvalid = INVALID_YELLOW_CARD_NUMBERS.includes(yellowCardNumber);
-
-                    if (isInvalid) {
-                        console.log(`Status: ${yellowCardNumber} is marked as INVALID.`);
-                        tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Invalid`;
-                        tableHeading.classList.remove('bg-success');
-                        tableHeading.classList.add('bg-danger'); // Add the specifically styled .bg-danger class
-
-                        tableBody.innerHTML = '<tr><td colspan="2">Details not displayed for invalid card.</td></tr>';
-                        tableBody.className = 'invalid-card-body';
-                        console.log("Table population skipped for invalid card.");
-
-                    } else {
-                        console.log(`Status: ${yellowCardNumber} is considered VALID.`);
-                        tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Valid`;
-                        tableHeading.classList.remove('bg-danger');
-                        tableHeading.classList.add('bg-success'); // Add original green style via class
-
-                        populateTable(policy);
-                    }
-
-                } else {
-                    if (!tableBody.querySelector('.error-message')) {
-                         displayError(`No policy data found in the database for Yellow Card number: ${yellowCardNumber}`);
-                    }
+                if (!data.found) {
+                    displayError(`No policy data found for Yellow Card number: ${yellowCardNumber}`);
+                    return;
                 }
-                // Optional: Close DB
-                // try { db.close(); console.log("Database closed."); } catch (e) { console.error("Error closing DB", e); }
 
-            } else {
-                console.log("Initialization stopped because database could not be loaded.");
+                if (!data.valid) {
+                    tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Invalid`;
+                    tableHeading.classList.remove('bg-success');
+                    tableHeading.classList.add('bg-danger');
+                    tableBody.innerHTML = '<tr><td colspan="2">Details not displayed for invalid card.</td></tr>';
+                    tableBody.className = 'invalid-card-body';
+                } else {
+                    tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Valid`;
+                    tableHeading.classList.remove('bg-danger');
+                    tableHeading.classList.add('bg-success');
+                    populateTable(data.policy);
+                }
+            } catch (error) {
+                console.error('API Error:', error);
+                displayError('Failed to verify Yellow Card. Please try again later.');
             }
         }
 
-        // --- Start the application ---
-        document.addEventListener('DOMContentLoaded', (event) => {
-             initializeAndLoad();
-        });
-
+        document.addEventListener('DOMContentLoaded', initializeAndLoad);
     </script>
 </body>
 </html>
