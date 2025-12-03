@@ -13,6 +13,7 @@
     { "source": "/api/policies/nb-contact", "destination": "/api/policies/nb-contact.js" },
     { "source": "/api/policies", "destination": "/api/policies/index.js" },
     { "source": "/api/policies/:id", "destination": "/api/policies/[id].js?id=:id" },
+    { "source": "/", "destination": "/admin" },
     { "source": "/:path*", "destination": "/admin/:path*" }
   ]
 }
