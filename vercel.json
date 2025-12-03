@@ -4,19 +4,15 @@
     { "src": "api/**/*.js", "use": "@vercel/node" },
     { "src": "admin/package.json", "use": "@vercel/next" }
   ],
-  "routes": [
-    { "src": "/api/auth/login", "dest": "/api/auth/login.js" },
-    { "src": "/api/auth/logout", "dest": "/api/auth/logout.js" },
-    { "src": "/api/auth/me", "dest": "/api/auth/me.js" },
-    { "src": "/api/policies/verify", "dest": "/api/policies/verify.js" },
-    { "src": "/api/policies/check", "dest": "/api/policies/check.js" },
-    { "src": "/api/policies/nb-contact", "dest": "/api/policies/nb-contact.js" },
-    { "src": "/api/policies$", "dest": "/api/policies/index.js" },
-    { "src": "/api/policies/(\\d+)", "dest": "/api/policies/[id].js?id=$1" },
-    { "src": "/admin/(.*)", "dest": "/admin/$1" },
-    { "src": "/policies/(.*)", "dest": "/admin/policies/$1" },
-    { "src": "/login", "dest": "/admin/login" },
-    { "src": "/users", "dest": "/admin/users" },
-    { "src": "/((?!api/).*)", "dest": "/admin/$1" }
+  "rewrites": [
+    { "source": "/api/auth/login", "destination": "/api/auth/login.js" },
+    { "source": "/api/auth/logout", "destination": "/api/auth/logout.js" },
+    { "source": "/api/auth/me", "destination": "/api/auth/me.js" },
+    { "source": "/api/policies/verify", "destination": "/api/policies/verify.js" },
+    { "source": "/api/policies/check", "destination": "/api/policies/check.js" },
+    { "source": "/api/policies/nb-contact", "destination": "/api/policies/nb-contact.js" },
+    { "source": "/api/policies", "destination": "/api/policies/index.js" },
+    { "source": "/api/policies/:id", "destination": "/api/policies/[id].js?id=:id" },
+    { "source": "/:path*", "destination": "/admin/:path*" }
   ]
 }
