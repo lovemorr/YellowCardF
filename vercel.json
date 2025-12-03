@@ -13,6 +13,10 @@
     { "src": "/api/policies/nb-contact", "dest": "/api/policies/nb-contact.js" },
     { "src": "/api/policies$", "dest": "/api/policies/index.js" },
     { "src": "/api/policies/(\\d+)", "dest": "/api/policies/[id].js?id=$1" },
-    { "src": "/(.*)", "dest": "/admin/$1" }
+    { "src": "/admin/(.*)", "dest": "/admin/$1" },
+    { "src": "/policies/(.*)", "dest": "/admin/policies/$1" },
+    { "src": "/login", "dest": "/admin/login" },
+    { "src": "/users", "dest": "/admin/users" },
+    { "src": "/((?!api/).*)", "dest": "/admin/$1" }
   ]
 }
