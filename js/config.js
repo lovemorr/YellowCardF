@@ -1,6 +1,6 @@
 // API Configuration
 // Production: Vercel API
-const API_BASE_URL = 'https://lucaselmo-bjyjgzkov-lovemorrs-projects.vercel.app';
+const API_BASE_URL = 'https://lucaselmo.vercel.app';
 
 // For local development, uncomment this line:
 // const API_BASE_URL = 'http://localhost:3000';

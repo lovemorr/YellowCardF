@@ -11,8 +11,8 @@
     { "src": "/api/policies/verify", "dest": "/api/policies/verify.js" },
     { "src": "/api/policies/check", "dest": "/api/policies/check.js" },
     { "src": "/api/policies/nb-contact", "dest": "/api/policies/nb-contact.js" },
-    { "src": "/api/policies/([^/]+)", "dest": "/api/policies/[id].js?id=$1" },
-    { "src": "/api/policies", "dest": "/api/policies/index.js" },
+    { "src": "/api/policies$", "dest": "/api/policies/index.js" },
+    { "src": "/api/policies/(?<id>[^/]+)", "dest": "/api/policies/[id].js?id=$id" },
     { "src": "/(.*)", "dest": "/admin/$1" }
   ]
 }
