@@ -5,7 +5,14 @@
     { "src": "admin/package.json", "use": "@vercel/next" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/api/auth/login", "dest": "/api/auth/login.js" },
+    { "src": "/api/auth/logout", "dest": "/api/auth/logout.js" },
+    { "src": "/api/auth/me", "dest": "/api/auth/me.js" },
+    { "src": "/api/policies/verify", "dest": "/api/policies/verify.js" },
+    { "src": "/api/policies/check", "dest": "/api/policies/check.js" },
+    { "src": "/api/policies/nb-contact", "dest": "/api/policies/nb-contact.js" },
+    { "src": "/api/policies/([^/]+)", "dest": "/api/policies/[id].js?id=$1" },
+    { "src": "/api/policies", "dest": "/api/policies/index.js" },
     { "src": "/(.*)", "dest": "/admin/$1" }
   ]
 }
