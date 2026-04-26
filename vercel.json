@@ -1,26 +1,18 @@
 {
   "version": 2,
   "builds": [
+    { "src": "public/**", "use": "@vercel/static" },
     { "src": "api/**/*.js", "use": "@vercel/node" },
     { "src": "admin/package.json", "use": "@vercel/next" }
   ],
-  "rewrites": [
-    { "source": "/api/auth/login", "destination": "/api/auth/login.js" },
-    { "source": "/api/auth/logout", "destination": "/api/auth/logout.js" },
-    { "source": "/api/auth/me", "destination": "/api/auth/me.js" },
-    { "source": "/api/policies/verify", "destination": "/api/policies/verify.js" },
-    { "source": "/api/policies/check", "destination": "/api/policies/check.js" },
-    { "source": "/api/policies/nb-contact", "destination": "/api/policies/nb-contact.js" },
-    { "source": "/api/policies", "destination": "/api/policies/index.js" },
-    { "source": "/api/policies/:id", "destination": "/api/policies/[id].js?id=:id" },
-    { "source": "/admin", "destination": "/admin" },
-    { "source": "/admin/:path*", "destination": "/admin/:path*" }
-  ],
   "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/admin/_next/(.*)", "dest": "/admin/_next/$1" },
+    { "src": "/admin/(.*)", "dest": "/admin/$1" },
+    { "src": "/admin", "dest": "/admin" },
     { "src": "/css/(.*)", "dest": "/public/css/$1" },
     { "src": "/js/(.*)", "dest": "/public/js/$1" },
-    { "src": "/(favicon.ico|icon.png|icon.svg|robots.txt|site.webmanifest)", "dest": "/public/$1" },
-    { "src": "/(index|form|generator|master_policy_list|YellowCard-policy-verify).html", "dest": "/public/$1.html" },
+    { "src": "/(.*\\.(html|ico|png|svg|txt|webmanifest))", "dest": "/public/$1" },
     { "src": "/", "dest": "/public/index.html" }
   ]
 }
