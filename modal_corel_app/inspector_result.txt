@@ -1,0 +1,561 @@
+
+==========================================
+FILE: tzn sample.cdr
+==========================================
+
+[POTENTIAL QR CODES]
+  Found Image at (x=304.5787, y=98.9430) Size: 283.5000x61.5000
+  Found Image at (x=366.9121, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=435.2186, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=435.2186, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=366.9121, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=503.4789, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=571.7854, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=571.7854, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=503.4789, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=366.9121, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=435.2186, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=435.2186, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=366.9121, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=230.5877, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=298.8942, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=298.8942, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=230.5877, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=230.5877, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=298.8942, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=298.8942, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=230.5877, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=230.5877, y=87.8879) Size: 65.2500x65.2500
+  Found Image at (x=298.8942, y=87.8879) Size: 65.2500x65.2500
+  Found Image at (x=298.8942, y=157.4108) Size: 65.2500x65.2500
+  Found Image at (x=230.5877, y=157.4108) Size: 65.2500x65.2500
+  Found Image at (x=366.9121, y=86.5832) Size: 65.2500x65.2500
+  Found Image at (x=435.2186, y=86.5832) Size: 65.2500x65.2500
+  Found Image at (x=435.2186, y=156.1061) Size: 65.2500x65.2500
+  Found Image at (x=366.9121, y=156.1061) Size: 65.2500x65.2500
+  Found Image at (x=639.8032, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=708.1097, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=708.1097, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=639.8032, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=94.2633, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=162.5699, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=162.5699, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=94.2633, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=94.2633, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=162.5699, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=162.5699, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=94.2633, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=94.3966, y=89.1253) Size: 65.2500x65.2500
+  Found Image at (x=162.7031, y=89.1253) Size: 65.2500x65.2500
+  Found Image at (x=162.7031, y=158.6482) Size: 65.2500x65.2500
+  Found Image at (x=94.3966, y=158.6482) Size: 65.2500x65.2500
+  Found Image at (x=639.8032, y=86.5832) Size: 65.2500x65.2500
+  Found Image at (x=708.1097, y=86.5832) Size: 65.2500x65.2500
+  Found Image at (x=708.1097, y=156.1061) Size: 65.2500x65.2500
+  Found Image at (x=639.8032, y=156.1061) Size: 65.2500x65.2500
+  Found Image at (x=503.4789, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=571.7854, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=571.7854, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=503.4789, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=639.8032, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=708.1097, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=708.1097, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=639.8032, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=503.2365, y=87.8879) Size: 65.2500x65.2500
+  Found Image at (x=571.5430, y=87.8879) Size: 65.2500x65.2500
+  Found Image at (x=571.5430, y=157.4108) Size: 65.2500x65.2500
+  Found Image at (x=503.2365, y=157.4108) Size: 65.2500x65.2500
+  Found Image at (x=169.2164, y=96.2572) Size: 51.6517x51.8717
+  Found Image at (x=610.3256, y=97.4735) Size: 78.9419x62.0257
+  Found Image at (x=648.7574, y=386.6556) Size: 28.3870x28.3870
+
+[TEXT STYLES (Sample of first 100)]
+  Text: NICS5231464984
+    Font: Unknown | Size: Unknown
+    Pos:  (439.1195, 189.4810)
+    ---
+  Text: 09-07-25
+    Font: Unknown | Size: Unknown
+    Pos:  (251.9269, 191.1866)
+    ---
+  Text: TZ6984562
+    Font: Unknown | Size: Unknown
+    Pos:  (625.8991, 191.4367)
+    ---
+  Text: POLICY NO
+N  DE LA POLICE
+    Font: Unknown | Size: Unknown
+    Pos:  (345.1859, 198.3212)
+    ---
+  Text: ISSUED ON 
+DELIVREE LE
+    Font: Unknown | Size: Unknown
+    Pos:  (158.8490, 198.8181)
+    ---
+  Text: Y/C NO
+N  DE CJ
+    Font: Unknown | Size: Unknown
+    Pos:  (531.4978, 201.4257)
+    ---
+  Text: 1612G085398
+    Font: Unknown | Size: Unknown
+    Pos:  (438.6543, 215.7177)
+    ---
+  Text: AAC926SF
+    Font: Unknown | Size: Unknown
+    Pos:  (251.7225, 216.7447)
+    ---
+  Text: LGZJLNT45CX067074
+    Font: Unknown | Size: Unknown
+    Pos:  (624.8180, 219.2496)
+    ---
+  Text: ENGINE NO
+N DU MOTEUR
+    Font: Unknown | Size: Unknown
+    Pos:  (345.2443, 226.4457)
+    ---
+  Text: REGISTRATION NO
+N D IMATRICULATION
+    Font: Unknown | Size: Unknown
+    Pos:  (158.1814, 227.2331)
+    ---
+  Text: CHASSIS NO
+N  DU CHASSIS
+    Font: Unknown | Size: Unknown
+    Pos:  (532.5245, 227.9151)
+    ---
+  Text: Shacman
+    Font: Unknown | Size: Unknown
+    Pos:  (437.2325, 246.5147)
+    ---
+  Text: Lorry
+    Font: Unknown | Size: Unknown
+    Pos:  (251.6808, 248.1350)
+    ---
+  Text: Commercial
+    Font: Unknown | Size: Unknown
+    Pos:  (625.3688, 249.5778)
+    ---
+  Text: MAKE
+MAQUE
+    Font: Unknown | Size: Unknown
+    Pos:  (344.8114, 255.1363)
+    ---
+  Text: VEHICLE TYPE
+TYPE DE VEHICULE
+    Font: Unknown | Size: Unknown
+    Pos:  (157.6018, 255.4061)
+    ---
+  Text: USE
+USAGE
+    Font: Unknown | Size: Unknown
+    Pos:  (531.4161, 257.5140)
+    ---
+  Text: 17-07-26
+    Font: Unknown | Size: Unknown
+    Pos:  (438.3609, 272.9580)
+    ---
+  Text: 18-08-25
+    Font: Unknown | Size: Unknown
+    Pos:  (250.9418, 274.6020)
+    ---
+  Text: VALID FROM
+VALABLE DU
+    Font: Unknown | Size: Unknown
+    Pos:  (156.7519, 282.4730)
+    ---
+  Text: VALID TO 
+VALABLE AU
+    Font: Unknown | Size: Unknown
+    Pos:  (342.9360, 283.5116)
+    ---
+  Text: *
+    Font: Unknown | Size: Unknown
+    Pos:  (321.3357, 301.8832)
+    ---
+  Text: Dingsheng Transport Ltd
+    Font: Unknown | Size: Unknown
+    Pos:  (249.9355, 304.0441)
+    ---
+  Text: INSURED
+ASSURE
+    Font: Unknown | Size: Unknown
+    Pos:  (156.0467, 310.0969)
+    ---
+  Text: Rua 6 Munhava
+Beira
+    Font: Unknown | Size: Unknown
+    Pos:  (625.8317, 310.5984)
+    ---
+  Text: National Insurance Corporation Ltd
+    Font: Unknown | Size: Unknown
+    Pos:  (248.8944, 330.8210)
+    ---
+  Text: INSURER
+ASSUREUR
+    Font: Unknown | Size: Unknown
+    Pos:  (155.7170, 337.9504)
+    ---
+  Text: P O Box 9264 
+ Dar es Salaam
+    Font: Unknown | Size: Unknown
+    Pos:  (597.5522, 339.0531)
+    ---
+  Text: TZS 0
+    Font: Unknown | Size: Unknown
+    Pos:  (434.3261, 360.1650)
+    ---
+  Text: TAX&LEVY
+    Font: Unknown | Size: Unknown
+    Pos:  (342.3433, 361.0468)
+    ---
+  Text: TZS 199 000.00
+    Font: Unknown | Size: Unknown
+    Pos:  (625.4425, 361.5049)
+    ---
+  Text: TZS 199 000.00
+    Font: Unknown | Size: Unknown
+    Pos:  (248.1511, 361.5049)
+    ---
+  Text: COUNTRIES COVERED   MW,ZM,ZW,CD
+PAYS APPLICABLES
+
+
+    Font: Unknown | Size: Unknown
+    Pos:  (530.9470, 366.9727)
+    ---
+  Text: PREMIUM
+PRIME
+    Font: Unknown | Size: Unknown
+    Pos:  (155.9605, 368.4319)
+    ---
+  Text: TAX&LEVY
+    Font: Unknown | Size: Unknown
+    Pos:  (341.6839, 369.7662)
+    ---
+  Text: *
+    Font: Unknown | Size: Unknown
+    Pos:  (327.4183, 397.1818)
+    ---
+  Text: NAME AND ADDRESS OF BEREAU 
+NOM ET ADDRESSE DU BUR
+    Font: Unknown | Size: Unknown
+    Pos:  (119.2571, 406.6815)
+    ---
+  Text: UNDERWRITER SIGNATURE
+SOUSCRIPTEUR  SIGNATURE
+    Font: Unknown | Size: Unknown
+    Pos:  (447.1390, 411.4015)
+    ---
+  Text: National Insurance Corporation Ltd
+P O Box 9264 Da
+    Font: Unknown | Size: Unknown
+    Pos:  (159.7174, 428.5500)
+    ---
+  Text: 2
+    Font: Unknown | Size: Unknown
+    Pos:  (577.7501, 468.2781)
+    ---
+  Text: 7
+    Font: Unknown | Size: Unknown
+    Pos:  (568.5415, 468.3932)
+    ---
+  Text: 1
+    Font: Unknown | Size: Unknown
+    Pos:  (559.2764, 468.7971)
+    ---
+  Text: 6
+    Font: Unknown | Size: Unknown
+    Pos:  (540.3274, 468.9034)
+    ---
+  Text: 6
+    Font: Unknown | Size: Unknown
+    Pos:  (548.9504, 469.0888)
+    ---
+  Text: 0
+    Font: Unknown | Size: Unknown
+    Pos:  (531.4864, 469.6123)
+    ---
+  Text: 0
+    Font: Unknown | Size: Unknown
+    Pos:  (523.4017, 470.1991)
+    ---
+  Text: TZ-
+    Font: Unknown | Size: Unknown
+    Pos:  (478.6991, 470.4180)
+    ---
+
+==========================================
+FILE: zim sample.cdr
+==========================================
+
+[POTENTIAL QR CODES]
+  Found Image at (x=304.5787, y=98.9430) Size: 283.5000x61.5000
+  Found Image at (x=171.0446, y=97.7486) Size: 48.0000x48.7500
+  Found Image at (x=366.9121, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=435.2186, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=435.2186, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=366.9121, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=503.4789, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=571.7854, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=571.7854, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=503.4789, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=366.9121, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=435.2186, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=435.2186, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=366.9121, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=230.5877, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=298.8942, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=298.8942, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=230.5877, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=230.5877, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=298.8942, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=298.8942, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=230.5877, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=230.5877, y=87.8879) Size: 65.2500x65.2500
+  Found Image at (x=298.8942, y=87.8879) Size: 65.2500x65.2500
+  Found Image at (x=298.8942, y=157.4108) Size: 65.2500x65.2500
+  Found Image at (x=230.5877, y=157.4108) Size: 65.2500x65.2500
+  Found Image at (x=366.9121, y=86.5832) Size: 65.2500x65.2500
+  Found Image at (x=435.2186, y=86.5832) Size: 65.2500x65.2500
+  Found Image at (x=435.2186, y=156.1061) Size: 65.2500x65.2500
+  Found Image at (x=366.9121, y=156.1061) Size: 65.2500x65.2500
+  Found Image at (x=639.8032, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=708.1097, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=708.1097, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=639.8032, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=94.2633, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=162.5699, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=162.5699, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=94.2633, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=94.2633, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=162.5699, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=162.5699, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=94.2633, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=94.1131, y=89.1253) Size: 65.2500x65.2500
+  Found Image at (x=162.4197, y=89.1253) Size: 65.2500x65.2500
+  Found Image at (x=162.4197, y=158.6482) Size: 65.2500x65.2500
+  Found Image at (x=94.1131, y=158.6482) Size: 65.2500x65.2500
+  Found Image at (x=639.8032, y=86.5832) Size: 65.2500x65.2500
+  Found Image at (x=708.1097, y=86.5832) Size: 65.2500x65.2500
+  Found Image at (x=708.1097, y=156.1061) Size: 65.2500x65.2500
+  Found Image at (x=639.8032, y=156.1061) Size: 65.2500x65.2500
+  Found Image at (x=503.4789, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=571.7854, y=369.1804) Size: 65.2500x65.2500
+  Found Image at (x=571.7854, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=503.4789, y=438.7033) Size: 65.2500x65.2500
+  Found Image at (x=639.8032, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=708.1097, y=226.2760) Size: 65.2500x65.2500
+  Found Image at (x=708.1097, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=639.8032, y=295.7989) Size: 65.2500x65.2500
+  Found Image at (x=503.2365, y=87.8879) Size: 65.2500x65.2500
+  Found Image at (x=571.5430, y=87.8879) Size: 65.2500x65.2500
+  Found Image at (x=571.5430, y=157.4108) Size: 65.2500x65.2500
+  Found Image at (x=503.2365, y=157.4108) Size: 65.2500x65.2500
+  Found Image at (x=603.2362, y=126.4100) Size: 36.7167x20.9939
+  Found Image at (x=650.1609, y=386.2304) Size: 30.9920x30.9920
+
+[TEXT STYLES (Sample of first 100)]
+  Text: ZW6295991
+    Font: Unknown | Size: Unknown
+    Pos:  (625.8671, 191.4367)
+    ---
+  Text: ICZIM24163165531
+    Font: Unknown | Size: Unknown
+    Pos:  (439.2207, 192.5991)
+    ---
+  Text: 23-10-25
+    Font: Unknown | Size: Unknown
+    Pos:  (251.9011, 192.9229)
+    ---
+  Text: ISSUED ON 
+DELIVREE LE
+    Font: Unknown | Size: Unknown
+    Pos:  (158.8490, 198.8181)
+    ---
+  Text: POLICY NO
+N  DE LA POLICE
+    Font: Unknown | Size: Unknown
+    Pos:  (345.1859, 200.8723)
+    ---
+  Text: Y/C NO
+N  DE CJ
+    Font: Unknown | Size: Unknown
+    Pos:  (531.4978, 201.4257)
+    ---
+  Text: n/a
+    Font: Unknown | Size: Unknown
+    Pos:  (438.3111, 217.9749)
+    ---
+  Text: ZT0526
+    Font: Unknown | Size: Unknown
+    Pos:  (625.1131, 219.2496)
+    ---
+  Text: ACQ8373
+    Font: Unknown | Size: Unknown
+    Pos:  (251.5782, 219.2703)
+    ---
+  Text: REGISTRATION NO
+N D IMATRICULATION
+    Font: Unknown | Size: Unknown
+    Pos:  (158.1814, 227.2331)
+    ---
+  Text: ENGINE NO
+N DU MOTEUR
+    Font: Unknown | Size: Unknown
+    Pos:  (345.2443, 227.2961)
+    ---
+  Text: CHASSIS NO
+N  DU CHASSIS
+    Font: Unknown | Size: Unknown
+    Pos:  (532.5245, 227.9151)
+    ---
+  Text: Indale
+    Font: Unknown | Size: Unknown
+    Pos:  (437.6078, 245.3726)
+    ---
+  Text: Trailer
+    Font: Unknown | Size: Unknown
+    Pos:  (251.2369, 246.5631)
+    ---
+  Text: Commercial
+    Font: Unknown | Size: Unknown
+    Pos:  (625.3688, 249.5778)
+    ---
+  Text: VEHICLE TYPE
+TYPE DE VEHICULE
+    Font: Unknown | Size: Unknown
+    Pos:  (157.6018, 255.4061)
+    ---
+  Text: MAKE
+MAQUE
+    Font: Unknown | Size: Unknown
+    Pos:  (344.8114, 256.2701)
+    ---
+  Text: USE
+USAGE
+    Font: Unknown | Size: Unknown
+    Pos:  (531.4161, 257.5140)
+    ---
+  Text: 22-10-26
+    Font: Unknown | Size: Unknown
+    Pos:  (437.7260, 272.9580)
+    ---
+  Text: 23-10-25
+    Font: Unknown | Size: Unknown
+    Pos:  (250.6277, 274.4799)
+    ---
+  Text: VALID FROM
+VALABLE DU
+    Font: Unknown | Size: Unknown
+    Pos:  (156.7519, 282.4730)
+    ---
+  Text: VALID TO 
+VALABLE AU
+    Font: Unknown | Size: Unknown
+    Pos:  (342.9360, 282.6612)
+    ---
+  Text: Nicnel Plant & Equipment
+    Font: Unknown | Size: Unknown
+    Pos:  (249.9279, 303.9574)
+    ---
+  Text: INSURED
+ASSURE
+    Font: Unknown | Size: Unknown
+    Pos:  (156.0467, 310.0969)
+    ---
+  Text: 120 Lytton Road
+Workington
+Harare
+    Font: Unknown | Size: Unknown
+    Pos:  (623.6118, 319.7775)
+    ---
+  Text: Safel Insurance Company
+    Font: Unknown | Size: Unknown
+    Pos:  (248.6259, 332.3494)
+    ---
+  Text: INSURER
+ASSUREUR
+    Font: Unknown | Size: Unknown
+    Pos:  (155.7170, 337.9504)
+    ---
+  Text: 5 R Tangwena Rd,harare
+ n/a
+    Font: Unknown | Size: Unknown
+    Pos:  (622.3374, 338.4703)
+    ---
+  Text: USD 0
+    Font: Unknown | Size: Unknown
+    Pos:  (434.7726, 356.5650)
+    ---
+  Text: TAX&LEVY
+    Font: Unknown | Size: Unknown
+    Pos:  (342.3433, 357.4468)
+    ---
+  Text: USD 160
+    Font: Unknown | Size: Unknown
+    Pos:  (625.9028, 357.9049)
+    ---
+  Text: USD 160
+    Font: Unknown | Size: Unknown
+    Pos:  (248.8958, 358.0447)
+    ---
+  Text: PREMIUM
+PRIME
+    Font: Unknown | Size: Unknown
+    Pos:  (155.9605, 364.8319)
+    ---
+  Text: COUNTRIES COVERED   ZM,CD
+PAYS APPLICABLES      
+
+
+    Font: Unknown | Size: Unknown
+    Pos:  (530.9470, 366.9727)
+    ---
+  Text: NAME AND ADDRESS OF BEREAU 
+NOM ET ADDRESSE DU BUR
+    Font: Unknown | Size: Unknown
+    Pos:  (119.2571, 406.6815)
+    ---
+  Text: UNDERWRITER SIGNATURE
+SOUSCRIPTEUR  SIGNATURE
+    Font: Unknown | Size: Unknown
+    Pos:  (447.1390, 411.4015)
+    ---
+  Text: Insurance Council of Zimbabwe
+P.O Box 4174 Harare 
+    Font: Unknown | Size: Unknown
+    Pos:  (155.7870, 428.5500)
+    ---
+  Text: 6
+    Font: Unknown | Size: Unknown
+    Pos:  (577.8726, 469.1205)
+    ---
+  Text: 5
+    Font: Unknown | Size: Unknown
+    Pos:  (568.5605, 469.2662)
+    ---
+  Text: 1
+    Font: Unknown | Size: Unknown
+    Pos:  (559.2764, 469.5171)
+    ---
+  Text: 0
+    Font: Unknown | Size: Unknown
+    Pos:  (531.4864, 469.6123)
+    ---
+  Text: 2
+    Font: Unknown | Size: Unknown
+    Pos:  (549.2974, 469.6135)
+    ---
+  Text: 5
+    Font: Unknown | Size: Unknown
+    Pos:  (540.3940, 469.6234)
+    ---
+  Text: 0
+    Font: Unknown | Size: Unknown
+    Pos:  (523.4017, 470.1991)
+    ---
+  Text: ZW-
+    Font: Unknown | Size: Unknown
+    Pos:  (478.6586, 470.4180)
+    ---

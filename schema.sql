@@ -18,6 +18,13 @@ CREATE TABLE IF NOT EXISTS yellow_card_policies (
   no_of_seats VARCHAR(20),
   issuing_nb_contact VARCHAR(255),
   secretariat_contact VARCHAR(255),
+  vehicle_type VARCHAR(100),
+  vehicle_usage VARCHAR(100),
+  customer_address TEXT,
+  insurer_address TEXT,
+  financial_premium VARCHAR(50),
+  financial_tax VARCHAR(50),
+  financial_total VARCHAR(50),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

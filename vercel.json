@@ -13,7 +13,14 @@
     { "source": "/api/policies/nb-contact", "destination": "/api/policies/nb-contact.js" },
     { "source": "/api/policies", "destination": "/api/policies/index.js" },
     { "source": "/api/policies/:id", "destination": "/api/policies/[id].js?id=:id" },
-    { "source": "/", "destination": "/admin" },
-    { "source": "/:path*", "destination": "/admin/:path*" }
+    { "source": "/admin", "destination": "/admin" },
+    { "source": "/admin/:path*", "destination": "/admin/:path*" }
+  ],
+  "routes": [
+    { "src": "/css/(.*)", "dest": "/public/css/$1" },
+    { "src": "/js/(.*)", "dest": "/public/js/$1" },
+    { "src": "/(favicon.ico|icon.png|icon.svg|robots.txt|site.webmanifest)", "dest": "/public/$1" },
+    { "src": "/(index|form|generator|master_policy_list|YellowCard-policy-verify).html", "dest": "/public/$1.html" },
+    { "src": "/", "dest": "/public/index.html" }
   ]
 }

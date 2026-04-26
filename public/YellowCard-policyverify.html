@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+    <title>e-YC | Yellow Card Verification</title>
+
+    <!-- App CSS -->
+    <link href="css/app.bundle.css" rel="stylesheet">
+
+    <!-- === Add Font Loading Link Here if needed === -->
+    <!--
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Porient+One&display=swap" rel="stylesheet">
+    -->
+
+    <!-- Custom Styles -->
+    <style>
+        /* Style for error messages shown in the table body */
+        .error-message { /* ... styles unchanged ... */ }
+
+        /* Style for the header span (#tableHeading) */
+        #tableHeading { /* ... styles unchanged ... */ }
+
+        /* --- Style Adjustments --- */
+
+        /* Rely on app.bundle.css for .bg-success */
+
+        /* Red 'Invalid' style - Adjusted for better contrast */
+        .bg-danger {
+            background-color: #F2DEDE;          /* Specific light red background */
+            /* CHANGED: Darker gray text for better contrast (meets 4.5:1) */
+            color: #595959;
+            font-family: 'Porient One', sans-serif; /* Specific font family (ensure loaded!) + fallback */
+            font-size: 22px;                   /* Specific font size */
+            font-style: italic;                /* Keep italic style */
+            /* Padding, border-radius etc. should come from base classes */
+        }
+        /* --- End Style Adjustments --- */
+
+
+        /* Style first column of the table body */
+        #policyTableBody td:first-child { /* ... styles unchanged ... */ }
+
+         /* Optional: Style for empty table body when invalid */
+        #policyTableBody.invalid-card-body td { /* ... styles unchanged ... */ }
+    </style>
+     <style>
+        /* Style for error messages shown in the table body */
+        .error-message {
+            color: #721c24;
+            background-color: #f8d7da;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid #f5c6cb;
+            border-radius: 0.25rem;
+        }
+
+        /* Style for the header span (#tableHeading) */
+        #tableHeading {
+             display: block;
+             margin-bottom: 1rem;
+        }
+
+        /* --- Style Adjustments --- */
+
+        /* Red 'Invalid' style - Adjusted for better contrast */
+        .bg-danger {
+            background-color: #F2DEDE;
+            color: #595959; /* CHANGED */
+            font-family: 'Porient One', sans-serif;
+            font-size: 22px;
+            font-style: italic;
+        }
+        /* --- End Style Adjustments --- */
+
+
+        /* Style first column of the table body */
+        #policyTableBody td:first-child {
+            width: 40%;
+            font-weight: bold;
+        }
+
+         /* Optional: Style for empty table body when invalid */
+        #policyTableBody.invalid-card-body td {
+             padding: 0.75rem 1.25rem;
+             font-style: italic;
+             color: #6c757d;
+             text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <div style="border-bottom: #e2e2e2 1px solid;">
+       <!-- ... Navigation HTML unchanged ... -->
+        <nav class="navbar navbar-static-top" role="navigation"
+            style="margin-bottom: 0; padding-left: 50px; padding-right: 50px;">
+            <div class="navbar-header"
+                style="padding-bottom:15px; padding-top:10px; margin: auto; width: 420px; float: none;">
+                <a class="navbar-brand" href="/"><span style="color : #48bbb4">e-</span><span
+                        style="color : #ff6444">YC</span>
+                    Yellow Card Verification</a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="row ng-scope">
+        <div style="width: 550px; margin: 0 auto; float: none;">
+            <div class="password-reset-div">
+                <!-- ... Rest of body HTML unchanged ... -->
+                <h5 class="custom-page-header text-center"></h5>
+
+                <table class="table" id="policyTable">
+                    <thead>
+                        <tr>
+                            <th colspan="2">
+                                <span class="custom-small-header text-center" id="tableHeading">
+                                    Loading...
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="policyTableBody">
+                        <tr><td colspan="2">Initializing... Please wait.</td></tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="text-center" style="margin-top: 30px;">
+                © 2023 <a href="http://ycmis.comesa.int">COMESA Yellow Card</a> All rights reserved.
+            </div>
+        </div>
+    </div>
+
+    <!-- sql.js -->
+    <script src="sql-asm.js"></script>
+
+    <script>
+        // Get references to UI elements
+        const tableHeading = document.getElementById('tableHeading');
+        const tableBody = document.getElementById('policyTableBody');
+
+        // --- List of Invalid Numbers ---
+        const INVALID_YELLOW_CARD_NUMBERS = [ /* ... list unchanged ... */ ];
+        // --- Helper Functions ---
+        function getQueryParameter(name) { /* ... unchanged ... */ }
+        function displayError(message) { /* ... unchanged ... */ }
+        function formatDate(date) { /* ... unchanged ... */ }
+        // --- Database Functions ---
+        async function loadDatabaseFromFile(dbFileName) { /* ... unchanged ... */ }
+        function loadPolicy(db, yellowCardNumber) { /* ... unchanged ... */ }
+        // --- Table Population Function ---
+        function populateTable(policy) { /* ... unchanged ... */ }
+        // --- Main Initialization Logic ---
+        async function initializeAndLoad() { /* ... unchanged ... */ }
+
+        // --- Start the application ---
+        document.addEventListener('DOMContentLoaded', (event) => {
+             initializeAndLoad();
+        });
+
+
+        // --- Full JavaScript implementation (unchanged from previous correct version.) ---
+        const INVALID_YELLOW_CARD_NUMBERS = [
+            "ZW97423785", "ZW6721326", "ZW6273665", "ZW2314370", "ZW9011230",
+            "ZW2400757", "ZW0865715", "ZW4534350", "ZW5876557", "ZW8696545",
+            "ZW3525671", "ZW7089436", "ZW3785551", "ZW1296530", "ZW7857478",
+            "ZW9485064", "ZW6365478", "ZW0077859", "ZW9742132", "ZW0004534",
+            "ZW050086", "ZW2153967", "ZW5007421", "ZW5467390", "ZW7699307",
+            "ZW1007575", "ZW8575409", "ZW3415774", "ZW8112425", "ZW5286633",
+            "ZW3224324", "ZW3003534", "ZW9794536", "ZW242156", "ZW2425780",
+            "ZW0007765", "ZW5637778", "ZW768554", "ZW48291573", "ZW10374829",
+            "ZW29583714", "ZW50827149", "ZW94732851", "ZW61394872", "ZW78512493",
+            "ZW89427315", "ZW21547893", "ZW93741285", "ZW34295178", "ZW52978431",
+            "ZW41785392", "ZW85947132", "ZW17845392", "ZW56294381", "ZW98147325",
+            "ZW74582139", "ZW23947851", "ZW18479352", "ZW57824139", "ZW73249581",
+            "ZW24985137", "ZW89475321", "ZW31495782", "ZW67582391", "ZW84175238",
+            "ZW96248731", "ZW52179438", "ZW38714259", "ZW71459283", "ZW24857319",
+            "ZW53872194", "ZW91582734", "ZW87521943", "ZW12784593", "ZW64279531",
+            "ZW35197284", "ZW98471352", "ZW27349581", "ZW81374259", "ZW54821793",
+            "ZW39285741", "ZW45798132", "ZW61594732", "ZW72951384", "ZW93817425",
+            "ZW13475829", "ZW84729135", "ZW21348795", "ZW57938241", "ZW84175239",
+            "ZW67295148", "ZW95328714", "ZW41857239", "ZW23951478", "ZW84253719",
+            "ZW18543927", "ZW39785214", "ZW52481739", "ZW67824951", "ZW29475813",
+            "ZW81534729", "ZW74385291", "ZW19284753", "ZW53749281", "ZW82194735",
+            "ZW96347182", "ZW25987143", "ZW74129835", "ZW34982715", "ZW87425193",
+            "ZW62793158", "ZW51837942", "ZW79248531", "ZW23948715", "ZW56428713",
+            "ZW82649731", "ZW37184925", "ZW94781532", "ZW58213749", "ZW61527398",
+            "ZW73951482", "ZW29847135", "ZW47932851", "ZW31578249", "ZW84271936",
+            "ZW19638247", "ZW75829413", "ZW23795148", "ZW64152879", "ZW82374195",
+            "ZW52719348", "ZW96827435", "ZW31475829", "ZW49273815", "ZW85721934",
+            "ZW17538294", "ZW92647183", "ZW38194275", "ZW67358942", "ZW28473591",
+            "ZW81935724", "ZW57218493", "ZW63829175", "ZW42789156", "ZW15937284",
+            "ZW68231745", "ZW76182395", "ZW93725184", "ZW34589172"
+        ];
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        function displayError(message) {
+            console.error("Displaying Error:", message);
+            tableHeading.textContent = 'Error Occurred';
+            tableHeading.classList.remove('bg-success', 'bg-danger');
+            tableBody.innerHTML = `<tr><td colspan="2" class="error-message">${message}</td></tr>`;
+            tableBody.className = '';
+        }
+        function formatDate(date) {
+            if (!(date instanceof Date) || isNaN(date)) { return 'Invalid Date'; }
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+        }
+        async function loadDatabaseFromFile(dbFileName) {
+            try {
+                const SQL = await initSqlJs({ locateFile: file => `./${file}` });
+                console.log("Fetching database file:", dbFileName);
+                const response = await fetch(dbFileName);
+                if (!response.ok) { throw new Error(`Failed to load database file '${dbFileName}': ${response.status} ${response.statusText}.`); }
+                const buffer = await response.arrayBuffer();
+                const uint8Array = new Uint8Array(buffer);
+                const db = new SQL.Database(uint8Array);
+                console.log("SQL.js Database initialized successfully.");
+                return db;
+            } catch (error) {
+                displayError(`Error loading database: ${error.message}`);
+                console.error("Detailed error during database load:", error);
+                return null;
+            }
+        }
+        function loadPolicy(db, yellowCardNumber) {
+            let policy = null;
+            let stmt = null;
+            try {
+                stmt = db.prepare("SELECT * FROM yellow_card_policies WHERE yellow_card_number = :ycn");
+                stmt.bind({ ':ycn': yellowCardNumber });
+                if (stmt.step()) { policy = stmt.getAsObject(); }
+                 else { console.log("No policy found in database for:", yellowCardNumber); }
+            } catch (error) {
+                displayError(`Error querying policy data: ${error.message}`);
+                console.error("SQL Query Error:", error);
+            } finally {
+                if (stmt) { stmt.free(); }
+            }
+            return policy;
+        }
+        function populateTable(policy) {
+            tableBody.innerHTML = '';
+            tableBody.className = '';
+            const fields = [
+                ["Verification Timestamp", "verification_timestamp"], ["PIC Name", "pic_name"],
+                ["Yellow Card Number", "yellow_card_number"], ["Policy Number", "policy_number"],
+                ["Issued On", "issued_on"], ["Issued Timestamp", "issued_timestamp"],
+                ["Valid From", "valid_from"], ["Valid Upto", "valid_upto"],
+                ["Customer Name", "customer_name"], ["Vehicle Make", "vehicle_make"],
+                ["Vehicle Reg Number", "vehicle_reg_number"], ["Countries Covered", "countries_covered"],
+                ["Vehicle Engine Number", "vehicle_engine_number"], ["Vehicle Chassis Number", "vehicle_chassis_number"],
+                ["Vehicle Color", "vehicle_color"], ["No. of Seats", "no_of_seats"],
+                ["Issuing NB Contact", "issuing_nb_contact"], ["Secretariat Contact", "secretariat_contact"]
+            ];
+            const verificationTime = formatDate(new Date());
+            fields.forEach(([label, key]) => {
+                const row = tableBody.insertRow();
+                const cell1 = row.insertCell(); cell1.textContent = label;
+                const cell2 = row.insertCell();
+                cell2.textContent = (key === "verification_timestamp") ? verificationTime : (policy[key] ?? '');
+            });
+            console.log("Table populated.");
+        }
+        async function initializeAndLoad() {
+            console.log("Starting initializeAndLoad function...");
+            tableBody.innerHTML = '<tr><td colspan="2">Loading policy details... Please wait.</td></tr>';
+            tableBody.className = '';
+            const yellowCardNumber = getQueryParameter('yellow_card_number');
+            if (!yellowCardNumber) {
+                displayError("No Yellow Card number provided in the URL."); return;
+            }
+            tableHeading.textContent = `Checking Yellow Card: ${yellowCardNumber}...`;
+            tableHeading.classList.remove('bg-success', 'bg-danger');
+            const db = await loadDatabaseFromFile('yellow_card.db');
+            if (db) {
+                const policy = loadPolicy(db, yellowCardNumber);
+                if (policy) {
+                    const isInvalid = INVALID_YELLOW_CARD_NUMBERS.includes(yellowCardNumber);
+                    if (isInvalid) {
+                        console.log(`Status: ${yellowCardNumber} is INVALID.`);
+                        tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Invalid`;
+                        tableHeading.classList.remove('bg-success');
+                        tableHeading.classList.add('bg-danger');
+                        tableBody.innerHTML = '<tr><td colspan="2">Details not displayed for invalid card.</td></tr>';
+                        tableBody.className = 'invalid-card-body';
+                    } else {
+                        console.log(`Status: ${yellowCardNumber} is VALID.`);
+                        tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Valid`;
+                        tableHeading.classList.remove('bg-danger');
+                        tableHeading.classList.add('bg-success');
+                        populateTable(policy);
+                    }
+                } else {
+                    if (!tableBody.querySelector('.error-message')) {
+                        displayError(`No policy data found for Yellow Card number: ${yellowCardNumber}`);
+                    }
+                }
+            } else { console.log("Initialization stopped: database load failed."); }
+        }
+        document.addEventListener('DOMContentLoaded', initializeAndLoad);
+
+    </script>
+</body>
+</html>

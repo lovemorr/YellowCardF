@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+    <title>e-YC | Yellow Card Verification</title>
+
+    <link href="css/app.bundle.css" rel="stylesheet">
+
+    <style>
+        .error-message {
+            color: #721c24;
+            background-color: #f8d7da;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid #f5c6cb;
+            border-radius: 0.25rem;
+        }
+        #tableHeading {
+             display: block;
+             margin-bottom: 1rem;
+        }
+        .bg-danger {
+            background-color: #F2DEDE;
+            color: #808080;
+            font-family: 'Porient One', sans-serif;
+            font-size: 22px;
+            font-style: italic;
+        }
+        #policyTableBody td:first-child {
+            width: 40%;
+            font-weight: bold;
+        }
+        #policyTableBody.invalid-card-body td {
+             padding: 0.75rem 1.25rem;
+             font-style: italic;
+             color: #6c757d;
+             text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="border-bottom: #e2e2e2 1px solid;">
+        <nav class="navbar navbar-static-top" role="navigation"
+            style="margin-bottom: 0; padding-left: 50px; padding-right: 50px;">
+            <div class="navbar-header"
+                style="padding-bottom:15px; padding-top:10px; margin: auto; width: 420px; float: none;">
+                <a class="navbar-brand" href="/"><span style="color : #48bbb4">e-</span><span
+                        style="color : #ff6444">YC</span>
+                    Yellow Card Verification</a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="row ng-scope">
+        <div style="width: 550px; margin: 0 auto; float: none;">
+            <div class="password-reset-div">
+                <h5 class="custom-page-header text-center"></h5>
+
+                <table class="table" id="policyTable">
+                    <thead>
+                        <tr>
+                            <th colspan="2">
+                                <span class="custom-small-header text-center" id="tableHeading">
+                                    Loading...
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="policyTableBody">
+                        <tr><td colspan="2">Initializing... Please wait.</td></tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="text-center" style="margin-top: 30px;">
+                © 2023 <a href="http://ycmis.comesa.int">COMESA Yellow Card</a> All rights reserved.
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        const tableHeading = document.getElementById('tableHeading');
+        const tableBody = document.getElementById('policyTableBody');
+
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function displayError(message) {
+            tableHeading.textContent = 'Error Occurred';
+            tableHeading.classList.remove('bg-success', 'bg-danger');
+            tableBody.innerHTML = `<tr><td colspan="2" class="error-message">${message}</td></tr>`;
+            tableBody.className = '';
+        }
+
+        function formatDate(date) {
+            if (!(date instanceof Date) || isNaN(date)) { return 'Invalid Date'; }
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+        }
+
+        function populateTable(policy) {
+            tableBody.innerHTML = '';
+            tableBody.className = '';
+
+            const fields = [
+                ["Verification Timestamp", "verification_timestamp"], ["PIC Name", "pic_name"],
+                ["Yellow Card Number", "yellow_card_number"], ["Policy Number", "policy_number"],
+                ["Issued On", "issued_on"], ["Issued Timestamp", "issued_timestamp"],
+                ["Valid From", "valid_from"], ["Valid Upto", "valid_upto"],
+                ["Customer Name", "customer_name"], ["Vehicle Make", "vehicle_make"],
+                ["Vehicle Reg Number", "vehicle_reg_number"], ["Countries Covered", "countries_covered"],
+                ["Vehicle Engine Number", "vehicle_engine_number"], ["Vehicle Chassis Number", "vehicle_chassis_number"],
+                ["Vehicle Color", "vehicle_color"], ["No. of Seats", "no_of_seats"],
+                ["Issuing NB Contact", "issuing_nb_contact"], ["Secretariat Contact", "secretariat_contact"]
+            ];
+            const verificationTime = formatDate(new Date());
+
+            fields.forEach(([label, key]) => {
+                const row = tableBody.insertRow();
+                const cell1 = row.insertCell(); cell1.textContent = label;
+                const cell2 = row.insertCell();
+                cell2.textContent = (key === "verification_timestamp") ? verificationTime : (policy[key] ?? '');
+            });
+        }
+
+        async function initializeAndLoad() {
+            tableBody.innerHTML = '<tr><td colspan="2">Loading policy details... Please wait.</td></tr>';
+            tableBody.className = '';
+
+            const yellowCardNumber = getQueryParameter('yellow_card_number');
+
+            if (!yellowCardNumber) {
+                displayError("No Yellow Card number provided in the URL. Please add '?yellow_card_number=YOUR_NUMBER' to the web address.");
+                return;
+            }
+
+            tableHeading.textContent = `Checking Yellow Card: ${yellowCardNumber}...`;
+            tableHeading.classList.remove('bg-success', 'bg-danger');
+
+            try {
+                const res = await fetch(`${API_CONFIG.endpoints.verify}?yellow_card_number=${yellowCardNumber}`);
+                const data = await res.json();
+
+                if (!data.found) {
+                    displayError(`No policy data found for Yellow Card number: ${yellowCardNumber}`);
+                    return;
+                }
+
+                if (!data.valid) {
+                    tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Invalid`;
+                    tableHeading.classList.remove('bg-success');
+                    tableHeading.classList.add('bg-danger');
+                    tableBody.innerHTML = '<tr><td colspan="2">Details not displayed for invalid card.</td></tr>';
+                    tableBody.className = 'invalid-card-body';
+                } else {
+                    tableHeading.textContent = `Yellow Card: ${yellowCardNumber} is Valid`;
+                    tableHeading.classList.remove('bg-danger');
+                    tableHeading.classList.add('bg-success');
+                    populateTable(data.policy);
+                }
+            } catch (error) {
+                console.error('API Error:', error);
+                displayError('Failed to verify Yellow Card. Please try again later.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeAndLoad);
+    </script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Vehicle Insurance Form</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    .container {
+      margin-top: 40px;
+      max-width: 700px;
+    }
+
+    .card {
+      padding: 30px;
+      border-radius: 12px;
+    }
+
+    .form-title {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="card z-depth-2 white">
+      <h5 class="form-title center-align">Vehicle Insurance Entry</h5>
+      <form action="/submit" method="POST">
+        <div class="input-field"><input id="yellow_card_number" name="yellow_card_number" type="text"><label
+            for="yellow_card_number">Yellow Card Number</label></div>
+        <div class="input-field"><input id="verification_timestamp" name="verification_timestamp" type="text"><label
+            for="verification_timestamp">Verification Timestamp</label></div>
+        <div class="input-field"><input id="pic_name" name="pic_name" type="text"><label for="pic_name">PIC Name</label>
+        </div>
+        <div class="input-field"><input id="policy_number" name="policy_number" type="text"><label
+            for="policy_number">Policy Number</label></div>
+        <div class="input-field"><input id="issued_on" name="issued_on" type="text"><label for="issued_on">Issued
+            On</label></div>
+        <div class="input-field"><input id="issued_timestamp" name="issued_timestamp" type="text"><label
+            for="issued_timestamp">Issued Timestamp</label></div>
+        <div class="input-field"><input id="valid_from" name="valid_from" type="text"><label for="valid_from">Valid
+            From</label></div>
+        <div class="input-field"><input id="valid_upto" name="valid_upto" type="text"><label for="valid_upto">Valid
+            Upto</label></div>
+        <div class="input-field"><input id="customer_name" name="customer_name" type="text"><label
+            for="customer_name">Customer Name</label></div>
+        <div class="input-field"><input id="vehicle_make" name="vehicle_make" type="text"><label
+            for="vehicle_make">Vehicle Make</label></div>
+        <div class="input-field"><input id="vehicle_reg_number" name="vehicle_reg_number" type="text"><label
+            for="vehicle_reg_number">Vehicle Reg. Number</label></div>
+        <div class="input-field"><input id="countries_covered" name="countries_covered" type="text"><label
+            for="countries_covered">Countries Covered</label></div>
+        <div class="input-field"><input id="vehicle_engine_number" name="vehicle_engine_number" type="text"><label
+            for="vehicle_engine_number">Vehicle Engine Number</label></div>
+        <div class="input-field"><input id="vehicle_chassis_number" name="vehicle_chassis_number" type="text"><label
+            for="vehicle_chassis_number">Vehicle Chassis Number</label></div>
+        <div class="input-field"><input id="vehicle_color" name="vehicle_color" type="text"><label
+            for="vehicle_color">Vehicle Color</label></div>
+        <div class="input-field"><input id="no_of_seats" name="no_of_seats" type="number"><label
+            for="no_of_seats">Number of Seats</label></div>
+        <!-- Contact Info -->
+        <h6 class="blue-text">Contact Information</h6>
+        <div class="input-field"><input id="issuing_nb_contact" name="issuing_nb_contact" type="text"><label
+            for="issuing_nb_contact">Issuing NB Contact</label></div>
+        <div class="input-field"><input id="secretariat_contact" name="secretariat_contact" type="text"><label
+            for="secretariat_contact">Secretariat Contact</label></div>
+
+        <!-- Private PDF/Corel Details (Hidden from Public Page) -->
+        <h6 class="blue-text">PDF / Corel Certificate Details</h6>
+        <div class="row">
+          <div class="col s6 input-field"><input id="vehicle_type" name="vehicle_type" type="text"
+              placeholder="e.g. Lorry, Bus"><label for="vehicle_type">Vehicle Type</label></div>
+          <div class="col s6 input-field"><input id="vehicle_usage" name="vehicle_usage" type="text"
+              placeholder="e.g. Commercial"><label for="vehicle_usage">Vehicle Usage</label></div>
+        </div>
+        <div class="input-field"><textarea id="customer_address" name="customer_address"
+            class="materialize-textarea"></textarea><label for="customer_address">Customer Address</label></div>
+        <div class="input-field"><textarea id="insurer_address" name="insurer_address"
+            class="materialize-textarea"></textarea><label for="insurer_address">Insurer Address</label></div>
+
+        <div class="row">
+          <div class="col s4 input-field"><input id="financial_premium" name="financial_premium" type="text"
+              placeholder="e.g. TZS 0"><label for="financial_premium">Premium</label></div>
+          <div class="col s4 input-field"><input id="financial_tax" name="financial_tax" type="text"
+              placeholder="e.g. Tax & Levy"><label for="financial_tax">Tax</label></div>
+          <div class="col s4 input-field"><input id="financial_total" name="financial_total" type="text"
+              placeholder="e.g. TZS 199 000.00"><label for="financial_total">Total Amount</label></div>
+        </div>
+
+        <div class="center-align">
+          <button class="btn waves-effect waves-light blue" type="submit">Submit
+            <i class="material-icons right"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>

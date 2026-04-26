@@ -1,0 +1,37 @@
+# Development files
+node_modules
+.env
+.env.local
+
+# Database files
+*.db
+*.db-*
+*.sqbpro
+
+# Build artifacts
+admin/.next
+admin/node_modules
+
+# Python/Modal app
+modal_corel_app
+
+# Git
+.git
+.gitattributes
+
+# IDE
+.vscode
+
+# Webpack
+webpack.*.js
+worker.*.js
+sql-*.js
+sql-*.wasm
+
+# Old files
+server.js
+YellowCard/
+
+# Documentation
+LICENSE.txt
+CNAME

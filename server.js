@@ -51,7 +51,7 @@ app.use(express.static('.'));
 async function authMiddleware(req, res, next) {
   const token = req.cookies.token;
   if (!token) return res.status(401).json({ error: 'Not authenticated' });
-  
+
   try {
     const secret = new TextEncoder().encode(process.env.JWT_SECRET);
     const { payload } = await jwtVerify(token, secret);
@@ -131,17 +131,46 @@ app.get('/api/policies', async (req, res) => {
 app.post('/api/policies', authMiddleware, async (req, res) => {
   const p = req.body;
   try {
+    // Auto-Increment Serial Number Logic
+    const lastSerialResult = await sql`
+      SELECT serial_number FROM yellow_card_policies 
+      WHERE serial_number IS NOT NULL 
+      ORDER BY id DESC LIMIT 1
+    `;
+
+    let nextSerialInt;
+    if (lastSerialResult.length === 0 || !lastSerialResult[0].serial_number) {
+      // First time: Start from User Provided Seed (Last was 0066173 -> Start at 0066174)
+      nextSerialInt = 66174;
+      console.log(`First run: No serial found. Starting at: ${nextSerialInt}`);
+    } else {
+      // Increment
+      try {
+        const lastVal = parseInt(lastSerialResult[0].serial_number.replace(/\D/g, ''));
+        nextSerialInt = lastVal + 1;
+      } catch (e) {
+        nextSerialInt = 66174; // Fallback
+      }
+    }
+
+    // Format as 7 digits with leading zeros (e.g. 0066174)
+    const nextSerialStr = nextSerialInt.toString().padStart(7, '0');
+
     const result = await sql`
       INSERT INTO yellow_card_policies (
         yellow_card_number, pic_name, policy_number, issued_on, issued_timestamp,
         valid_from, valid_upto, customer_name, vehicle_make, vehicle_reg_number,
         countries_covered, vehicle_engine_number, vehicle_chassis_number,
-        vehicle_color, no_of_seats, issuing_nb_contact, secretariat_contact
+        vehicle_color, no_of_seats, issuing_nb_contact, secretariat_contact,
+        vehicle_type, vehicle_usage, customer_address, insurer_address,
+        financial_premium, financial_tax, financial_total, serial_number
       ) VALUES (
         ${p.yellow_card_number}, ${p.pic_name}, ${p.policy_number}, ${p.issued_on}, ${p.issued_timestamp},
         ${p.valid_from}, ${p.valid_upto}, ${p.customer_name}, ${p.vehicle_make}, ${p.vehicle_reg_number},
         ${p.countries_covered}, ${p.vehicle_engine_number}, ${p.vehicle_chassis_number},
-        ${p.vehicle_color}, ${p.no_of_seats}, ${p.issuing_nb_contact}, ${p.secretariat_contact}
+        ${p.vehicle_color}, ${p.no_of_seats}, ${p.issuing_nb_contact}, ${p.secretariat_contact},
+        ${p.vehicle_type}, ${p.vehicle_usage}, ${p.customer_address}, ${p.insurer_address},
+        ${p.financial_premium}, ${p.financial_tax}, ${p.financial_total}, ${nextSerialStr}
       ) RETURNING *
     `;
     res.status(201).json(result[0]);
@@ -225,7 +254,10 @@ app.put('/api/policies/:id', authMiddleware, async (req, res) => {
         countries_covered = ${p.countries_covered}, vehicle_engine_number = ${p.vehicle_engine_number},
         vehicle_chassis_number = ${p.vehicle_chassis_number}, vehicle_color = ${p.vehicle_color},
         no_of_seats = ${p.no_of_seats}, issuing_nb_contact = ${p.issuing_nb_contact},
-        secretariat_contact = ${p.secretariat_contact}
+        secretariat_contact = ${p.secretariat_contact}, vehicle_type = ${p.vehicle_type},
+        vehicle_usage = ${p.vehicle_usage}, customer_address = ${p.customer_address},
+        insurer_address = ${p.insurer_address}, financial_premium = ${p.financial_premium},
+        financial_tax = ${p.financial_tax}, financial_total = ${p.financial_total}
       WHERE id = ${req.params.id} RETURNING *
     `;
     if (result.length === 0) return res.status(404).json({ error: 'Not found' });

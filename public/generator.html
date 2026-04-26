@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yellow Card Number Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 2rem 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+        }
+        h2 { margin-top: 0; color: #48bbb4; }
+        #outputBox {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            background-color: #e9ecef;
+            color: #495057;
+            margin: 1rem 0;
+            box-sizing: border-box;
+        }
+        .button-group { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        button {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            color: white;
+        }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        #generateZmBtn { background-color: #4caf50; }
+        #generateZwBtn { background-color: #ffc107; color: #333; }
+        button:not(:disabled):hover { opacity: 0.9; transform: translateY(-2px); }
+        #status { margin-top: 1.5rem; color: #6c757d; font-style: italic; height: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Unique Yellow Card Number Generator</h2>
+        <input type="text" id="outputBox" readonly placeholder="Generated number will appear here">
+        <div class="button-group">
+            <button id="generateZmBtn">Generate Zambian (ZM)</button>
+            <button id="generateZwBtn">Generate Zimbabwean (ZW)</button>
+        </div>
+        <p id="status">Ready to generate</p>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        const outputBox = document.getElementById('outputBox');
+        const generateZmBtn = document.getElementById('generateZmBtn');
+        const generateZwBtn = document.getElementById('generateZwBtn');
+        const statusText = document.getElementById('status');
+
+        async function checkNumberExists(ycNumber) {
+            try {
+                const res = await fetch(`${API_CONFIG.endpoints.check}?yellow_card_number=${ycNumber}`);
+                const data = await res.json();
+                return data.exists;
+            } catch (error) {
+                console.error('API Error:', error);
+                return true; // Assume exists on error to be safe
+            }
+        }
+
+        async function generateUniqueNumber(prefix) {
+            generateZmBtn.disabled = true;
+            generateZwBtn.disabled = true;
+            statusText.textContent = `Searching for a unique ${prefix} number...`;
+            outputBox.value = 'Generating...';
+
+            let candidateNumber;
+            let isUnique = false;
+            let attempts = 0;
+            const MAX_ATTEMPTS = 100;
+
+            while (!isUnique && attempts < MAX_ATTEMPTS) {
+                const randomNumber = Math.floor(Math.random() * 90000000) + 10000000;
+                candidateNumber = prefix + randomNumber;
+                
+                const exists = await checkNumberExists(candidateNumber);
+                isUnique = !exists;
+                attempts++;
+                
+                if (!isUnique) {
+                    statusText.textContent = `Attempt ${attempts}: ${candidateNumber} exists, trying again...`;
+                }
+            }
+
+            if (isUnique) {
+                outputBox.value = candidateNumber;
+                statusText.textContent = `Found unique number in ${attempts} attempt(s).`;
+            } else {
+                outputBox.value = 'Generation Failed';
+                statusText.textContent = `Could not find a unique number after ${MAX_ATTEMPTS} attempts.`;
+                statusText.style.color = 'red';
+            }
+
+            generateZmBtn.disabled = false;
+            generateZwBtn.disabled = false;
+        }
+
+        generateZmBtn.addEventListener('click', () => generateUniqueNumber('ZM'));
+        generateZwBtn.addEventListener('click', () => generateUniqueNumber('ZW'));
+    </script>
+</body>
+</html>

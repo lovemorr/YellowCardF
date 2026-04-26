@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app" ng-strict-di="" class="ng-scope"><head><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+  <title>e-YC | Yellow Card Verification</title>
+
+  <!-- App CSS -->
+  <link href="css/app.bundle.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navigation -->
+<div style="border-bottom: #e2e2e2 1px solid;">
+  <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0; padding-left: 50px; padding-right: 50px;">
+    <div class="navbar-header" style="padding-bottom:15px; padding-top:10px; margin: auto; width: 420px; float: none;">
+      <a class="navbar-brand" href="/"><span style="color : #48bbb4">e-</span><span style="color : #ff6444">YC</span> Yellow Card Verification</a>
+    </div>
+  </nav>
+</div>
+
+<div class="row ng-scope" ng-controller="YellowCardVerification">
+  <div style="width: 550px; margin: 0 auto; float: none;">
+    <div class="password-reset-div">
+      <h5 class="custom-page-header text-center"></h5>
+
+
+      <!-- ngInclude: './views/stock/policy-verification.html' --><div ng-include="'./views/stock/policy-verification.html'" class="ng-scope" style=""><div class="form-group ng-scope">
+      <!-- ngIf: policy.numberOfPassengers !== 0  --><div ng-if="policy.numberOfPassengers !== 0 " class="ng-scope">
+    </div><!-- end ngIf: policy.numberOfPassengers !== 0  --><!-- ngIf: policy.status === 'valid' --><table class="table ng-scope" ng-if="policy.status === 'valid'" style="">
+      <thead>
+      <tr>
+        <th colspan="2"><span class="bg-success custom-small-header text-center ng-binding">Yellow Card: ZW0989766 is <!-- ngIf: policy.status === 'valid' --><span ng-if="policy.status === 'valid'" class="ng-scope">Valid</span><!-- end ngIf: policy.status === 'valid' --> <!-- ngIf: policy.status !== 'valid' --></span></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td width="40%">Verification Timestamp</td>
+        <td class="ng-binding">
+          25-02-2025 14:21:30
+        </td>
+      </tr>
+      <tr>
+        <td>PIC Name</td>
+        <td class="ng-binding">
+          Tristar Insurance Company
+        </td>
+      </tr>
+      <tr>
+        <td>Yellow Card Number</td>
+        <td class="ng-binding">
+          ZW0989766
+        </td>
+      </tr>
+      <tr>
+        <td>Policy Number</td>
+        <td class="ng-binding">
+          ICCLA824105937
+        </td>
+      </tr>
+      <tr>
+        <td>Issued On</td>
+        <td class="ng-binding">
+          25-02-2025
+        </td>
+      </tr>
+      <tr>
+        <td width="40%">Issued Timestamp</td>
+        <td class="ng-binding">
+          25-02-2025 11:45:22
+        </td>
+      </tr>
+
+      <tr>
+        <td>Valid From</td>
+        <td class="ng-binding">
+          25-02-2025
+        </td>
+      </tr>
+      <tr>
+        <td>Valid Upto</td>
+        <td class="ng-binding">
+          25-05-2026
+        </td>
+      </tr>
+      <tr>
+        <td>Customer Name</td>
+        <td class="ng-binding">
+          ICHEETAH LOG TECH
+        </td>
+      </tr>
+      <tr>
+        <td>Vehicle Make</td>
+        <td class="ng-binding">
+          HOWO
+        </td>
+      </tr>
+      <tr>
+        <td>Vehicle Reg Number</td>
+        <td class="ng-binding">
+          AD290SF
+        </td>
+      </tr>
+      <tr>
+        <td>Countries Covered</td>
+        <td class="ng-binding">
+          ZM
+        </td>
+      </tr>
+      <tr>
+        <td>Vehicle Engine Number</td>
+        <td class="ng-binding">
+
+        </td>
+      </tr>
+      <tr>
+        <td>Vehicle Chassis Number</td>
+        <td class="ng-binding">
+          LJRB85K2000709
+        </td>
+      </tr>
+      <tr>
+        <td>Vehicle Color</td>
+        <td class="ng-binding">
+          WHITE
+        </td>
+      </tr>
+
+      <tr>
+        <td>No. of Seats</td>
+        <td class="ng-binding">
+
+        </td>
+      </tr>
+
+
+      <tr>
+        <td>Issuing NB Contact</td>
+        <td class="ng-binding">
+          Insurance Council of Zimbabwe
+          P. O. Box 4174 Harare
+          +2634708031
+          icz@icz.co.zw
+        </td>
+      </tr>
+      <tr>
+        <td>Secretariat Contact</td>
+        <td class="ng-binding">
+          COMESA Secretariat
+          P.O. Box 30051
+          +260 211 229725/32
+          yellowcard@comesa.int
+        </td>
+      </tr>
+      </tbody>
+    </table><!-- end ngIf: policy.status === 'valid' -->
+
+
+      <!-- ngIf: policy.numberOfPassengers !== 0  --><div ng-if="policy.numberOfPassengers !== 0 " class="ng-scope">
+    </div><!-- end ngIf: policy.numberOfPassengers !== 0  --><!-- ngIf: policy.status === 'expired' || policy.status === 'cancelled'  -->
+
+      <!-- ngIf: policy.status === 'non_existing' -->
+
+
+    </div></div>
+
+    </div>
+    <div class="text-center" style="margin-top: 30px;">
+      © 2023 <a href="http://ycmis.comesa.int">COMESA Yellow Card</a> All rights reserved.
+    </div>
+  </div>
+</div>
+
+
+<!--<script src="js/vendor.bundle.js"></script>-->
+
+<!-- App -->
+<!--<script src="js/app.bundle.js"></script>-->
+</body><!-- Vendor --></html>
+
